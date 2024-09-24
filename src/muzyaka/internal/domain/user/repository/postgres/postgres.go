@@ -16,22 +16,6 @@ func NewUserRepository(db *gorm.DB) repository2.UserRepository {
 	return &userRepository{db: db}
 }
 
-func (u userRepository) GetAllLikedTracks(userId uint64) ([]uint64, error) {
-	var rels []*dao.UserTrack
-	tx := u.db.Where("user_id = ?", userId).Limit(dao.MaxLimit).Find(&rels)
-	if tx.Error != nil {
-		return nil, errors.Wrap(tx.Error, "database error (table user_track)")
-	}
-
-	var ans []uint64
-
-	for _, v := range rels {
-		ans = append(ans, v.TrackId)
-	}
-
-	return ans, nil
-}
-
 func (u userRepository) GetUserByEmail(email string) (*models.User, error) {
 	var user dao.User
 	tx := u.db.Where("email = ?", email).Take(&user)
@@ -40,33 +24,6 @@ func (u userRepository) GetUserByEmail(email string) (*models.User, error) {
 	}
 
 	return dao.ToModelUser(&user), nil
-}
-
-func (u userRepository) LikeTrack(userId uint64, trackId uint64) error {
-	tx := u.db.Create(dao.UserTrack{
-		TrackId: trackId,
-		UserId:  userId,
-	})
-
-	if tx.Error != nil {
-		return errors.Wrap(tx.Error, "database error (table users_track)")
-	}
-
-	return nil
-}
-
-func (u userRepository) DislikeTrack(userId uint64, trackId uint64) error {
-	tx := u.db.Delete(dao.UserTrack{}, "user_id = ? AND track_id = ?", userId, trackId)
-
-	if tx.Error != nil {
-		return errors.Wrap(tx.Error, "database error (table users_track)")
-	}
-
-	if tx.RowsAffected == 0 {
-		return models.ErrNothingToDelete
-	}
-
-	return nil
 }
 
 func (u userRepository) GetUser(id uint64) (*models.User, error) {

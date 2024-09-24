@@ -9,11 +9,8 @@ import (
 )
 
 type AlbumUseCase interface {
-	GetAlbum(id uint64) (*models.Album, error)
-
 	AddAlbumWithTracks(album *models.Album, tracks []*models.TrackObject, musicianId uint64) (uint64, error)
 	DeleteAlbum(id uint64) error
-	GetAllTracks(albumId uint64) ([]*models.TrackMeta, error)
 
 	IsAlbumOwned(albumId uint64, musicianId uint64) (bool, error)
 	GetAlbumIdForTrack(trackId uint64) (uint64, error)
@@ -29,16 +26,6 @@ func NewAlbumUseCase(albumRepository repository.AlbumRepository,
 	storage repository2.TrackStorage,
 	trackRepository repository2.TrackRepository) AlbumUseCase {
 	return &usecase{albumRep: albumRepository, storageRep: storage, trackRep: trackRepository}
-}
-
-func (u *usecase) GetAlbum(id uint64) (*models.Album, error) {
-	res, err := u.albumRep.GetAlbum(id)
-
-	if err != nil {
-		return nil, errors.Wrap(err, "album.usecase.GetAlbum error while get")
-	}
-
-	return res, nil
 }
 
 func (u *usecase) DeleteAlbum(id uint64) error {
@@ -90,16 +77,6 @@ func (u *usecase) AddAlbumWithTracks(album *models.Album, tracks []*models.Track
 	}
 
 	return id, nil
-}
-
-func (u *usecase) GetAllTracks(albumId uint64) ([]*models.TrackMeta, error) {
-	tracks, err := u.albumRep.GetAllTracksForAlbum(albumId)
-
-	if err != nil {
-		return nil, errors.Wrap(err, "album.usecase.GetAllTracks error while get")
-	}
-
-	return tracks, err
 }
 
 func (u *usecase) GetAlbumIdForTrack(trackId uint64) (uint64, error) {

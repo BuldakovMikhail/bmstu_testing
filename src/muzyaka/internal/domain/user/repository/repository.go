@@ -10,8 +10,4 @@ type UserRepository interface {
 	GetUserByEmail(email string) (*models.User, error)
 
 	AddUserWithMusician(musician *models.Musician, user *models.User) (uint64, error)
-
-	LikeTrack(userId uint64, trackId uint64) error
-	DislikeTrack(userId uint64, trackId uint64) error
-	GetAllLikedTracks(userId uint64) ([]uint64, error)
 }
