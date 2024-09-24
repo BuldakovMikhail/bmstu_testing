@@ -22,29 +22,14 @@ import (
 	"src/internal/domain/auth/delivery"
 	"src/internal/domain/auth/middleware"
 	"src/internal/domain/auth/usecase"
-	delivery3 "src/internal/domain/merch/delivery"
-	middleware3 "src/internal/domain/merch/middleware"
-	postgres5 "src/internal/domain/merch/repository/postgres"
-	usecase4 "src/internal/domain/merch/usecase"
 	delivery5 "src/internal/domain/musician/delivery"
 	postgres4 "src/internal/domain/musician/repository/postgres"
 	usecase3 "src/internal/domain/musician/usecase"
-	delivery6 "src/internal/domain/playlist/delivery"
-	middleware5 "src/internal/domain/playlist/middleware"
-	postgres7 "src/internal/domain/playlist/repository/postgres"
-	usecase6 "src/internal/domain/playlist/usecase"
-	delivery4 "src/internal/domain/recsys/delivery"
-	"src/internal/domain/recsys/recsys_client"
-	usecase9 "src/internal/domain/recsys/usecase"
 	delivery7 "src/internal/domain/track/delivery"
-	middleware7 "src/internal/domain/track/middleware"
 	"src/internal/domain/track/repository/minio"
 	postgres8 "src/internal/domain/track/repository/postgres"
 	usecase8 "src/internal/domain/track/usecase"
-	delivery8 "src/internal/domain/user/delivery"
-	middleware6 "src/internal/domain/user/middleware"
 	"src/internal/domain/user/repository/postgres"
-	usecase7 "src/internal/domain/user/usecase"
 	jwt2 "src/internal/lib/jwt"
 	"src/internal/lib/kafka"
 	"src/internal/lib/logger/handlers/slogpretty"
@@ -104,10 +89,7 @@ func App() {
 	albumRep := postgres3.NewAlbumRepository(db)
 	trackStorage := minio.NewTrackStorage(client)
 	musicianRep := postgres4.NewMusicianRepository(db)
-	merchRep := postgres5.NewMerchRepository(db)
-	playlistRep := postgres7.NewPlaylistRepository(db)
 	trackRep := postgres8.NewTrackRepository(db)
-	recSysClient := recsys_client.NewRecSysClient("http://127.0.0.1:12121/rec")
 
 	outboxRep := postgres6.NewOutboxRepo(db)
 
@@ -115,12 +97,8 @@ func App() {
 	authUseCase := usecase.NewAuthUseCase(tokenProvider, userRep, encryptor)
 	musicianUseCase := usecase3.NewMusicianUseCase(musicianRep)
 	albumUseCase := usecase2.NewAlbumUseCase(albumRep, trackStorage, trackRep)
-	merchUseCase := usecase4.NewMerchUseCase(merchRep)
-	playlistUseCase := usecase6.NewPlaylistUseCase(playlistRep, trackRep)
-	userUseCase := usecase7.NewUserUseCase(userRep, trackRep, encryptor)
 	trackUseCase := usecase8.NewTrackUseCase(trackRep, trackStorage)
 	outbox := usecase5.NewOutboxUseCase(producer, outboxRep)
-	recSysUseCase := usecase9.NewRecSysUseCase(recSysClient, trackRep)
 
 	go func() {
 		for {
@@ -139,36 +117,12 @@ func App() {
 		return middleware.CheckMusicianLevelPermissions(h, authUseCase)
 	})
 
-	adminMiddleware := (func(h http.Handler) http.Handler {
-		return middleware.CheckAdminLevelPermissions(h, authUseCase)
-	})
-
-	userMiddleware := (func(h http.Handler) http.Handler {
-		return middleware.CheckUserLevelPermissions(h, authUseCase)
-	})
-
 	checkForMusicianId := (func(h http.Handler) http.Handler {
 		return middleware2.CheckIsUserRelatedToMusician(h, musicianUseCase)
 	})
 
-	checkForUserId := (func(h http.Handler) http.Handler {
-		return middleware6.CheckIsUserRelated(h, userUseCase)
-	})
-
 	checkIsAlbumRelated := (func(h http.Handler) http.Handler {
 		return middleware2.CheckAlbumOwnership(h, albumUseCase, musicianUseCase)
-	})
-
-	checkIsPlaylistRelated := (func(h http.Handler) http.Handler {
-		return middleware5.CheckPlaylistOwnership(h, playlistUseCase)
-	})
-
-	checkIsMerchRelated := (func(h http.Handler) http.Handler {
-		return middleware3.CheckMerchOwnership(h, merchUseCase, musicianUseCase)
-	})
-
-	checkIsTrackRelated := (func(h http.Handler) http.Handler {
-		return middleware7.CheckTrackOwnership(h, albumUseCase, musicianUseCase)
 	})
 
 	basicAuthMiddleware := (func(h http.Handler) http.Handler {
@@ -179,7 +133,6 @@ func App() {
 
 	//auth
 	router.Post("/api/auth/sign-up/user", delivery.SignUp(authUseCase))
-	router.Post("/api/auth/sign-up/admin", delivery.SignUpAdmin(authUseCase))
 	router.Post("/api/auth/sign-in", delivery.SignIn(authUseCase))
 	router.Post("/api/auth/sign-up/musician", delivery.SignUpMusician(authUseCase))
 
@@ -190,98 +143,19 @@ func App() {
 
 		r.Group(func(r chi.Router) {
 			r.Use(checkIsAlbumRelated)
-			r.Post("/api/album/{id}/tracks", delivery2.CreateTrack(albumUseCase))
 			r.Delete("/api/album/{id}", delivery2.DeleteAlbum(albumUseCase))
-			r.Put("/api/album/{id}", delivery2.UpdateAlbum(albumUseCase))
 		})
-	})
-
-	// merch
-	router.Group(func(r chi.Router) {
-		r.Use(musicianMiddleware)
-		r.With(checkForMusicianId).Post("/api/musician/{musician_id}/merch", delivery3.MerchCreate(merchUseCase))
-
-		r.Group(func(r chi.Router) {
-			r.Use(checkIsMerchRelated)
-			r.Delete("/api/merch/{id}", delivery3.DeleteMerch(merchUseCase))
-			r.Put("/api/merch/{id}", delivery3.UpdateMerch(merchUseCase))
-		})
-	})
-
-	// musician
-	router.Group(func(r chi.Router) {
-		r.Use(musicianMiddleware)
-		r.With(checkForMusicianId).Put("/api/musician/{musician_id}", delivery5.UpdateMusician(musicianUseCase))
-		r.With(checkForMusicianId).Delete("/api/musician/{musician_id}", delivery5.DeleteMusician(musicianUseCase))
-	})
-
-	// playlist
-
-	router.Group(func(r chi.Router) {
-		r.Use(userMiddleware)
-
-		r.With(checkForUserId).Post("/api/user/{user_id}/playlist", delivery6.PlaylistCreate(playlistUseCase))
-		r.With(checkForUserId).Get("/api/user/{user_id}/playlist", delivery6.GetAllPlaylists(playlistUseCase))
-		r.Group(func(r chi.Router) {
-			r.Use(checkIsPlaylistRelated)
-			r.Put("/api/playlist/{id}", delivery6.UpdatePlaylist(playlistUseCase))
-			r.Delete("/api/playlist/{id}", delivery6.DeletePlaylist(playlistUseCase))
-			r.Post("/api/playlist/{id}/track", delivery6.AddTrack(playlistUseCase))
-			r.Delete("/api/playlist/{id}/track/{track_id}", delivery6.DeleteTrack(playlistUseCase))
-		})
-	})
-
-	// Track
-	router.Group(func(r chi.Router) {
-		r.Use(musicianMiddleware)
-		r.Use(checkIsTrackRelated)
-		r.Put("/api/track/{id}", delivery7.UpdateTrack(trackUseCase))
-		r.Delete("/api/track/{id}", delivery2.DeleteTrack(albumUseCase))
-	})
-
-	// User
-	router.Group(func(r chi.Router) {
-		r.Use(basicAuthMiddleware)
-		r.Use(checkForUserId)
-		r.Get("/api/user/{user_id}", delivery8.GetUser(userUseCase))
-		r.Put("/api/user/{user_id}", delivery8.UpdateUser(userUseCase))
-		r.Delete("/api/user/{user_id}", delivery8.DeleteUser(userUseCase))
-
-	})
-
-	// admin only
-	router.Group(func(r chi.Router) {
-		r.Use(adminMiddleware)
-		r.Post("/api/musician", delivery5.CreateMusician(musicianUseCase))
-	})
-
-	// Likes
-	router.Group(func(r chi.Router) {
-		r.Use(userMiddleware)
-		r.Use(checkForUserId)
-		r.Post("/api/user/{user_id}/favorite", delivery8.Like(userUseCase))
-		r.Delete("/api/user/{user_id}/favorite", delivery8.Dislike(userUseCase))
-		r.Get("/api/user/{user_id}/favorite", delivery8.GetAllLiked(userUseCase))
-		r.Get("/api/user/{user_id}/favorite/{track_id}", delivery8.IsLiked(userUseCase))
 	})
 
 	// Other opened requests
 	router.Group(func(r chi.Router) {
 		r.Use(basicAuthMiddleware)
-		r.Get("/api/track/genres", delivery7.GetGenres(trackUseCase))
+
 		r.Get("/api/track", delivery7.FindTracks(trackUseCase))
-		r.Get("/api/merch", delivery3.FindMerch(merchUseCase))
-		r.Get("/api/track/recs", delivery4.GetRecommendedTracks(recSysUseCase))
 		r.Get("/api/track/{id}", delivery7.GetTrack(trackUseCase))
-		r.Get("/api/playlist/{playlist_id}/track", delivery6.GetAllTracksForPlaylist(playlistUseCase))
-		r.Get("/api/playlist/{id}", delivery6.GetPlaylist(playlistUseCase))
 		r.Get("/api/musician/{musician_id}", delivery5.GetMusician(musicianUseCase))
 		r.Get("/api/album/{id}/tracks", delivery2.GetAllTracks(albumUseCase))
-		r.Get("/api/musician/{musician_id}/merch", delivery3.GetAllMerchForMusician(merchUseCase))
 		r.Get("/api/album/{id}", delivery2.GetAlbum(albumUseCase))
-		r.Get("/api/merch/{id}", delivery3.GetMerch(merchUseCase))
-		r.Get("/api/get-me", delivery8.GetMe(musicianUseCase))
-		r.Get("/api/musician/{musician_id}/album", delivery2.GetAllAlbumForMusician(albumUseCase))
 	})
 
 	// Swagger
