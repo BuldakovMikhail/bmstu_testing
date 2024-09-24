@@ -17,21 +17,6 @@ func NewAlbumRepository(db *gorm.DB) repository.AlbumRepository {
 	return &albumRepository{db: db}
 }
 
-func (ar *albumRepository) GetAllAlbumsForMusician(musicianId uint64) ([]*models.Album, error) {
-	var pgAlbums []*dao.Album
-	tx := ar.db.Limit(dao.MaxLimit).Find(&pgAlbums, "musician_id = ?", musicianId)
-	if tx.Error != nil {
-		return nil, errors.Wrap(tx.Error, "database error (table albums)")
-	}
-
-	var albums []*models.Album
-	for _, v := range pgAlbums {
-		albums = append(albums, dao.ToModelAlbum(v))
-	}
-
-	return albums, nil
-}
-
 func (ar *albumRepository) GetAlbumId(trackId uint64) (uint64, error) {
 	var track dao.TrackMeta
 
@@ -62,17 +47,6 @@ func (ar *albumRepository) GetAlbum(id uint64) (*models.Album, error) {
 		return nil, errors.Wrap(tx.Error, "database error (table album)")
 	}
 	return dao.ToModelAlbum(&album), nil
-}
-
-func (ar *albumRepository) UpdateAlbum(album *models.Album) error {
-	pgAlbum := dao.ToPostgresAlbum(album, 0)
-	tx := ar.db.Omit("id").Updates(pgAlbum)
-
-	if tx.Error != nil {
-		return errors.Wrap(tx.Error, "database error (table album)")
-	}
-
-	return nil
 }
 
 func (ar *albumRepository) AddAlbumWithTracksOutbox(album *models.Album, tracks []*models.TrackMeta, musicianId uint64) (uint64, error) {
@@ -167,109 +141,6 @@ func (ar *albumRepository) DeleteAlbumOutbox(id uint64) error {
 
 		if err := tx.Delete(&dao.Album{}, id).Error; err != nil {
 			return err
-		}
-
-		return nil
-	})
-
-	if err != nil {
-		return errors.Wrap(err, "database error (table album)")
-	}
-
-	return nil
-}
-
-func (ar *albumRepository) AddTrackToAlbumOutbox(albumId uint64, track *models.TrackMeta) (uint64, error) {
-	var pgGenre dao.Genre
-	if track.Genre != "" {
-		tx := ar.db.Where("name = ?", track.Genre).First(&pgGenre)
-		if tx.Error != nil {
-			return 0, errors.Wrap(tx.Error, "database error (table album)")
-		}
-	}
-
-	pgTrack := dao.ToPostgresTrack(track, pgGenre.ID, albumId)
-
-	err := ar.db.Transaction(func(tx *gorm.DB) error {
-		// Add track to tracks table
-		if err := tx.Create(&pgTrack).Error; err != nil {
-			return err
-		}
-		// Add event to outbox
-		eventID, err := uuid.GenerateUUID()
-		if err != nil {
-			return err
-		}
-
-		var genre uint64
-		genre = 0
-		if pgTrack.GenreRefer != nil {
-			genre = *pgTrack.GenreRefer
-		}
-
-		if err := tx.Create(&dao.Outbox{
-			ID:         0,
-			EventId:    eventID,
-			TrackId:    pgTrack.ID,
-			Source:     pgTrack.Source,
-			Name:       pgTrack.Name,
-			GenreRefer: genre,
-			Type:       dao.TypeAdd,
-			Sent:       false,
-		}).Error; err != nil {
-			return err
-		}
-
-		return nil
-	})
-
-	if err != nil {
-		return 0, errors.Wrap(err, "database error (table album)")
-	}
-
-	return pgTrack.ID, nil
-}
-
-func (ar *albumRepository) DeleteTrackFromAlbumOutbox(trackId uint64) error {
-	var pgTrack dao.TrackMeta
-	getRes := ar.db.Where("id = ?", trackId).Take(&pgTrack)
-	if err := getRes.Error; errors.Is(err, gorm.ErrRecordNotFound) {
-		return models.ErrNothingToDelete
-	} else if err != nil {
-		return errors.Wrap(err, "database error (table album)")
-	}
-
-	err := ar.db.Transaction(func(tx *gorm.DB) error {
-		deleteRes := tx.Delete(dao.TrackMeta{}, trackId)
-		if err := deleteRes.Error; err != nil {
-			return err
-		}
-
-		eventID, err := uuid.GenerateUUID()
-		if err != nil {
-			return err
-		}
-
-		if err := tx.Create(&dao.Outbox{
-			ID:      0,
-			EventId: eventID,
-			TrackId: trackId,
-			Type:    dao.TypeDelete,
-			Sent:    false,
-		}).Error; err != nil {
-			return err
-		}
-
-		res := tx.Limit(1).Find(&dao.TrackMeta{}, "album_id = ?", pgTrack.AlbumID)
-		if res.Error != nil {
-			return res.Error
-		}
-
-		// Delete album if no tracks left
-		if res.RowsAffected <= 0 {
-			if err := tx.Delete(&dao.Album{}, pgTrack.AlbumID).Error; err != nil {
-				return err
-			}
 		}
 
 		return nil

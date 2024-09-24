@@ -10,11 +10,8 @@ const MinPageSize = 10
 const MaxPageSize = 100
 
 type TrackUseCase interface {
-	UpdateTrack(track *models.TrackObject) error
 	GetTrack(id uint64) (*models.TrackObject, error)
 	GetTracksByPartName(name string, page int, pageSize int) ([]*models.TrackMeta, error)
-
-	GetGenres() ([]string, error)
 }
 
 type usecase struct {
@@ -24,15 +21,6 @@ type usecase struct {
 
 func NewTrackUseCase(rep repository.TrackRepository, storage repository.TrackStorage) TrackUseCase {
 	return &usecase{trackRep: rep, storageRep: storage}
-}
-
-func (u *usecase) GetGenres() ([]string, error) {
-	genres, err := u.trackRep.GetGenres()
-	if err != nil {
-		return nil, errors.Wrap(err, "track.usecase.GetGenres error while get")
-	}
-
-	return genres, nil
 }
 
 func (u *usecase) GetTracksByPartName(name string, page int, pageSize int) ([]*models.TrackMeta, error) {
@@ -68,18 +56,4 @@ func (u *usecase) GetTrack(id uint64) (*models.TrackObject, error) {
 	}
 
 	return res, nil
-}
-
-func (u *usecase) UpdateTrack(track *models.TrackObject) error {
-	err := u.storageRep.UploadObject(track)
-	if err != nil {
-		return errors.Wrap(err, "track.usecase.UpdateTrack error while update")
-	}
-
-	err = u.trackRep.UpdateTrack(track.ExtractMeta())
-	if err != nil {
-		return errors.Wrap(err, "track.usecase.UpdateTrack error while update")
-	}
-
-	return nil
 }
