@@ -43,7 +43,7 @@ func (t trackRepository) GetTracksByPartName(name string, offset int, limit int)
 	return modelTracks, nil
 }
 
-func (t trackRepository) GetTrack(id uint64) (*models.TrackMeta, error) {
+func (t trackRepository) GetTrack(id uint64) (*models.TrackObject, error) {
 	var track dao.TrackMeta
 
 	tx := t.db.Where("id = ?", id).Take(&track)

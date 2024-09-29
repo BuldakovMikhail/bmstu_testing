@@ -8,7 +8,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"src/internal/domain/auth/usecase"
 	"src/internal/lib/api/response"
 	"src/internal/models"
 	"src/internal/models/dto"
@@ -85,12 +84,7 @@ func (m *Menu) SignIn(opt wmenu.Opt) error {
 	m.role = getMe.Role
 	m.musicianId = getMe.MusicianId
 
-	switch m.role {
-	case usecase.UserRole:
-		m.RunUserMenu(client.Client)
-	case usecase.MusicianRole:
-		m.RunMusicianMenu(client.Client)
-	}
+	m.RunUserMenu(client.Client)
 
 	fmt.Println(response.StatusOK)
 

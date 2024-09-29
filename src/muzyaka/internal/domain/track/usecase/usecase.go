@@ -45,12 +45,7 @@ func (u *usecase) GetTracksByPartName(name string, page int, pageSize int) ([]*m
 }
 
 func (u *usecase) GetTrack(id uint64) (*models.TrackObject, error) {
-	meta, err := u.trackRep.GetTrack(id)
-	if err != nil {
-		return nil, errors.Wrap(err, "track.usecase.GetTrack error while get")
-	}
-
-	res, err := u.storageRep.LoadObject(meta)
+	res, err := u.trackRep.GetTrack(id)
 	if err != nil {
 		return nil, errors.Wrap(err, "track.usecase.GetTrack error while get")
 	}
