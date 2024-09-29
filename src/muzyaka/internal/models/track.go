@@ -1,14 +1,12 @@
 package models
 
 type TrackMeta struct {
-	Id     uint64
-	Source string
-	Name   string
-	Genre  string
+	Id    uint64
+	Name  string
+	Genre string
 }
 
 type TrackObject struct {
-	TrackMeta
 	Payload []byte
 }
 

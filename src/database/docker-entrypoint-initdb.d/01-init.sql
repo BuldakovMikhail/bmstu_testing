@@ -33,11 +33,12 @@ CREATE TABLE IF NOT EXISTS albums
 CREATE TABLE IF NOT EXISTS tracks
 (
     id       INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    payload   VARCHAR(254) NOT NULL,
+    payload   BYTEA        NOT NULL,
     name     VARCHAR(100) NOT NULL,
     album_id INT          NOT NULL
         REFERENCES albums (id)
             ON DELETE CASCADE,
     CHECK ( payload <> '' ),
+    CHECK ( length(payload) > 0 ),
     CHECK ( name <> '' )
 );

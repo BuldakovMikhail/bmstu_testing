@@ -15,12 +15,11 @@ type TrackUseCase interface {
 }
 
 type usecase struct {
-	trackRep   repository.TrackRepository
-	storageRep repository.TrackStorage
+	trackRep repository.TrackRepository
 }
 
-func NewTrackUseCase(rep repository.TrackRepository, storage repository.TrackStorage) TrackUseCase {
-	return &usecase{trackRep: rep, storageRep: storage}
+func NewTrackUseCase(rep repository.TrackRepository) TrackUseCase {
+	return &usecase{trackRep: rep}
 }
 
 func (u *usecase) GetTracksByPartName(name string, page int, pageSize int) ([]*models.TrackMeta, error) {

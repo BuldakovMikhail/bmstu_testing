@@ -1,8 +1,8 @@
 package usecase
 
 import (
+	"github.com/pkg/errors"
 	"src/internal/domain/album/repository"
-	repository2 "src/internal/domain/track/repository"
 	"src/internal/models"
 )
 
@@ -13,10 +13,28 @@ type AlbumUseCase interface {
 
 type usecase struct {
 	albumRep repository.AlbumRepository
-	trackRep repository2.TrackRepository
 }
 
-func NewAlbumUseCase(albumRepository repository.AlbumRepository,
-	trackRepository repository2.TrackRepository) AlbumUseCase {
-	return &usecase{albumRep: albumRepository, trackRep: trackRepository}
+func NewAlbumUseCase(albumRepository repository.AlbumRepository) AlbumUseCase {
+	return &usecase{albumRep: albumRepository}
+}
+
+func (u *usecase) GetAlbum(id uint64) (*models.Album, error) {
+	res, err := u.albumRep.GetAlbum(id)
+
+	if err != nil {
+		return nil, errors.Wrap(err, "album.usecase.GetAlbum error while get")
+	}
+
+	return res, nil
+}
+
+func (u *usecase) GetAllTracks(albumId uint64) ([]*models.TrackMeta, error) {
+	tracks, err := u.albumRep.GetAllTracks(albumId)
+
+	if err != nil {
+		return nil, errors.Wrap(err, "album.usecase.GetAllTracks error while get")
+	}
+
+	return tracks, err
 }

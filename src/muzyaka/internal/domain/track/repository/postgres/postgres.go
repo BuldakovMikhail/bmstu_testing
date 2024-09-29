@@ -17,7 +17,7 @@ func NewTrackRepository(db *gorm.DB) repository.TrackRepository {
 }
 
 func (t trackRepository) GetTracksByPartName(name string, offset int, limit int) ([]*models.TrackMeta, error) {
-	var tracks []*dao.TrackMeta
+	var tracks []*dao.Track
 
 	tx := t.db.
 		Offset(offset).
@@ -32,30 +32,19 @@ func (t trackRepository) GetTracksByPartName(name string, offset int, limit int)
 	var modelTracks []*models.TrackMeta
 
 	for _, v := range tracks {
-		var genre dao.Genre
-		tx = t.db.Where("id = ?", v.GenreRefer).Limit(1).Find(&genre)
-		if tx.Error != nil {
-			return nil, errors.Wrap(tx.Error, "database error (table track)")
-		}
-		modelTracks = append(modelTracks, dao.ToModelTrack(v, &genre))
+		modelTracks = append(modelTracks, dao.ToModelTrackMeta(v))
 	}
 
 	return modelTracks, nil
 }
 
 func (t trackRepository) GetTrack(id uint64) (*models.TrackObject, error) {
-	var track dao.TrackMeta
+	var track dao.Track
 
 	tx := t.db.Where("id = ?", id).Take(&track)
 	if tx.Error != nil {
 		return nil, errors.Wrap(tx.Error, "database error (table track)")
 	}
 
-	var genre dao.Genre
-	tx = t.db.Where("id = ?", track.GenreRefer).Limit(1).Find(&genre)
-	if tx.Error != nil {
-		return nil, errors.Wrap(tx.Error, "database error (table track)")
-	}
-
-	return dao.ToModelTrack(&track, &genre), nil
+	return dao.ToModelTrackObject(&track), nil
 }

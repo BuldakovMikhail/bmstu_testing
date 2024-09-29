@@ -2,49 +2,34 @@ package dao
 
 import "src/internal/models"
 
-type Genre struct {
-	ID   *uint64 `gorm:"column:id"`
-	Name string  `gorm:"column:name"`
+type Track struct {
+	ID      uint64 `gorm:"column:id"`
+	Payload []byte `gorm:"payload"`
+	Name    string `gorm:"column:name"`
+	AlbumID uint64 `gorm:"column:album_id"`
 }
 
-func (Genre) TableName() string {
-	return "genres"
-}
-
-type TrackMeta struct {
-	ID         uint64  `gorm:"column:id"`
-	Source     string  `gorm:"column:source"`
-	Name       string  `gorm:"column:name"`
-	GenreRefer *uint64 `gorm:"column:genre"`
-	AlbumID    uint64  `gorm:"column:album_id"`
-}
-
-func (TrackMeta) TableName() string {
+func (Track) TableName() string {
 	return "tracks"
 }
 
-func ToPostgresTrack(e *models.TrackMeta, genreRefer *uint64, albumId uint64) *TrackMeta {
-	var refer *uint64
-	if genreRefer == nil {
-		refer = nil
-	} else {
-		refer = genreRefer
-	}
-
-	return &TrackMeta{
-		ID:         e.Id,
-		Source:     e.Source,
-		Name:       e.Name,
-		GenreRefer: refer,
-		AlbumID:    albumId,
+func ToPostgresTrack(e *models.TrackMeta, albumId uint64) *Track {
+	return &Track{
+		ID:      e.Id,
+		Name:    e.Name,
+		AlbumID: albumId,
 	}
 }
 
-func ToModelTrack(track *TrackMeta, genre *Genre) *models.TrackMeta {
+func ToModelTrackMeta(track *Track) *models.TrackMeta {
 	return &models.TrackMeta{
-		Id:     track.ID,
-		Source: track.Source,
-		Name:   track.Name,
-		Genre:  genre.Name,
+		Id:   track.ID,
+		Name: track.Name,
+	}
+}
+
+func ToModelTrackObject(track *Track) *models.TrackObject {
+	return &models.TrackObject{
+		Payload: track.Payload,
 	}
 }
