@@ -6,7 +6,6 @@ type Album struct {
 	ID         uint64 `gorm:"column:id"`
 	Name       string `gorm:"column:name"`
 	Cover      []byte `gorm:"column:cover_file"`
-	Type       string `gorm:"column:type"`
 	MusicianID uint64 `gorm:"column:musician_id"`
 }
 
@@ -19,7 +18,6 @@ func ToPostgresAlbum(e *models.Album, musicianId uint64) *Album {
 		ID:         e.Id,
 		Name:       e.Name,
 		Cover:      e.CoverFile,
-		Type:       e.Type,
 		MusicianID: musicianId,
 	}
 }
@@ -29,6 +27,5 @@ func ToModelAlbum(e *Album) *models.Album {
 		Id:        e.ID,
 		Name:      e.Name,
 		CoverFile: e.Cover,
-		Type:      e.Type,
 	}
 }

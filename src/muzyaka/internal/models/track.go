@@ -9,7 +9,3 @@ type TrackMeta struct {
 type TrackObject struct {
 	Payload []byte
 }
-
-func (t *TrackObject) ExtractMeta() *TrackMeta {
-	return &t.TrackMeta
-}
