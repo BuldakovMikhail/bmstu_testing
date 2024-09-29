@@ -4,9 +4,12 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/ozontech/allure-go/pkg/framework/provider"
 	"github.com/ozontech/allure-go/pkg/framework/suite"
+	"github.com/stretchr/testify/assert"
 	mock_repository "src/internal/domain/album/repository/mocks"
 	"src/internal/domain/album/usecase"
 	"src/internal/lib/testing/builders"
+	"src/internal/lib/testing/mother"
+	"src/internal/models"
 	"testing"
 )
 
@@ -15,7 +18,10 @@ type AlbumSuite struct {
 	t *testing.T
 }
 
-func (a *AlbumSuite) Test_GetAlbum(t provider.T) {
+func (a *AlbumSuite) Test_GetAlbum_Success(t provider.T) {
+	c := gomock.NewController(t)
+	defer c.Finish()
+
 	t.Title("[GetAlbum] Success")
 	t.Tags("album")
 	t.Parallel()
@@ -24,10 +30,7 @@ func (a *AlbumSuite) Test_GetAlbum(t provider.T) {
 			WithId(1).
 			WithName("test").
 			WithCoverFile([]byte{1, 2, 3}).
-			BuildModel()
-
-		c := gomock.NewController(t)
-		defer c.Finish()
+			Build()
 
 		repo := mock_repository.NewMockAlbumRepository(c)
 		repo.EXPECT().GetAlbum(uint64(1)).Return(respAlbum, nil)
@@ -37,5 +40,63 @@ func (a *AlbumSuite) Test_GetAlbum(t provider.T) {
 		sCtx.Assert().NoError(err)
 		sCtx.Assert().NotNil(album)
 		sCtx.Assert().Equal(respAlbum, album)
+	})
+}
+
+func (a *AlbumSuite) Test_GetAlbum_Error(t provider.T) {
+	c := gomock.NewController(t)
+	defer c.Finish()
+
+	t.Title("[GetAlbum] Error from repository")
+	t.Tags("album")
+	t.Parallel()
+	t.WithNewStep("Error from repository", func(sCtx provider.StepCtx) {
+		repo := mock_repository.NewMockAlbumRepository(c)
+		repo.EXPECT().GetAlbum(uint64(1)).Return(nil, assert.AnError)
+
+		album, err := usecase.NewAlbumUseCase(repo).GetAlbum(1)
+
+		sCtx.Assert().ErrorIs(err, assert.AnError)
+		sCtx.Assert().Nil(album)
+	})
+}
+
+func (a *AlbumSuite) Test_GetAllTracks_Success(t provider.T) {
+	c := gomock.NewController(t)
+	defer c.Finish()
+
+	t.Title("[GetAllTracks] Success")
+	t.Tags("album")
+	t.Parallel()
+	t.WithNewStep("Success", func(sCtx provider.StepCtx) {
+		var respTracks []*models.TrackMeta
+		respTracks = append(respTracks, mother.TrackMetaObjectMother{}.DefaultTrack())
+
+		repo := mock_repository.NewMockAlbumRepository(c)
+		repo.EXPECT().GetAllTracks(uint64(1)).Return(respTracks, nil)
+
+		tracks, err := usecase.NewAlbumUseCase(repo).GetAllTracks(1)
+
+		sCtx.Assert().NoError(err)
+		sCtx.Assert().NotNil(tracks)
+		sCtx.Assert().Equal(respTracks, tracks)
+	})
+}
+
+func (a *AlbumSuite) Test_GetAllTracks_ErrorFromRepo(t provider.T) {
+	c := gomock.NewController(t)
+	defer c.Finish()
+
+	t.Title("[GetAllTracks] Error from repository")
+	t.Tags("album")
+	t.Parallel()
+	t.WithNewStep("Error from repository", func(sCtx provider.StepCtx) {
+		repo := mock_repository.NewMockAlbumRepository(c)
+		repo.EXPECT().GetAllTracks(uint64(1)).Return(nil, assert.AnError)
+
+		tracks, err := usecase.NewAlbumUseCase(repo).GetAllTracks(1)
+
+		sCtx.Assert().ErrorIs(err, assert.AnError)
+		sCtx.Assert().Nil(tracks)
 	})
 }

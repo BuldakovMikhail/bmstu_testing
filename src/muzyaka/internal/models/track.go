@@ -1,9 +1,8 @@
 package models
 
 type TrackMeta struct {
-	Id    uint64
-	Name  string
-	Genre string
+	Id   uint64
+	Name string
 }
 
 type TrackObject struct {
