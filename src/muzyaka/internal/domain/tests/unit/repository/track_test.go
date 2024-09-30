@@ -3,6 +3,7 @@ package repository
 import (
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/ozontech/allure-go/pkg/framework/provider"
+	"github.com/ozontech/allure-go/pkg/framework/suite"
 	"github.com/stretchr/testify/assert"
 	postgres2 "gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -11,9 +12,15 @@ import (
 	dbhelpers "src/internal/lib/testing/db"
 	"src/internal/models"
 	"src/internal/models/dao"
+	"testing"
 )
 
-func (a *AlbumSuite) Test_GetTrack_Success(t provider.T) {
+type TrackSuite struct {
+	suite.Suite
+	t *testing.T
+}
+
+func (a *TrackSuite) Test_GetTrack_Success(t provider.T) {
 	db, mock, err := sqlmock.New()
 	if err != nil {
 		a.t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
@@ -54,7 +61,7 @@ func (a *AlbumSuite) Test_GetTrack_Success(t provider.T) {
 	})
 }
 
-func (a *AlbumSuite) Test_GetTrack_Error(t provider.T) {
+func (a *TrackSuite) Test_GetTrack_Error(t provider.T) {
 	db, mock, err := sqlmock.New()
 	if err != nil {
 		a.t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
@@ -83,7 +90,7 @@ func (a *AlbumSuite) Test_GetTrack_Error(t provider.T) {
 	})
 }
 
-func (a *AlbumSuite) Test_GetTracksByPartName_Success(t provider.T) {
+func (a *TrackSuite) Test_GetTracksByPartName_Success(t provider.T) {
 	db, mock, err := sqlmock.New()
 	if err != nil {
 		a.t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
@@ -135,7 +142,7 @@ func (a *AlbumSuite) Test_GetTracksByPartName_Success(t provider.T) {
 	})
 }
 
-func (a *AlbumSuite) Test_GetTracksByPartName_Error(t provider.T) {
+func (a *TrackSuite) Test_GetTracksByPartName_Error(t provider.T) {
 	db, mock, err := sqlmock.New()
 	if err != nil {
 		a.t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
