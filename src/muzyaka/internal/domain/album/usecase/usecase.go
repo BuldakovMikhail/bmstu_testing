@@ -15,11 +15,17 @@ type usecase struct {
 	albumRep repository.AlbumRepository
 }
 
+var ErrAlbumIdIsZero = errors.New("album id cannot be zero")
+
 func NewAlbumUseCase(albumRepository repository.AlbumRepository) AlbumUseCase {
 	return &usecase{albumRep: albumRepository}
 }
 
 func (u *usecase) GetAlbum(id uint64) (*models.Album, error) {
+	if id == 0 {
+		return nil, ErrAlbumIdIsZero
+	}
+
 	res, err := u.albumRep.GetAlbum(id)
 
 	if err != nil {
@@ -30,6 +36,10 @@ func (u *usecase) GetAlbum(id uint64) (*models.Album, error) {
 }
 
 func (u *usecase) GetAllTracks(albumId uint64) ([]*models.TrackMeta, error) {
+	if albumId == 0 {
+		return nil, ErrAlbumIdIsZero
+	}
+
 	tracks, err := u.albumRep.GetAllTracks(albumId)
 
 	if err != nil {
