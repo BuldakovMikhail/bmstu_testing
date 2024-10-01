@@ -1,0 +1,13 @@
+test:
+	rm -rf allure-results
+	export ALLURE_OUTPUT_PATH="../docs" && go test ./internal/domain/tests/unit/ --race --parallel 11
+
+allure:
+	cp -R allure-reports/history allure-results
+	rm -rf allure-reports
+	allure generate allure-results -o allure-reports
+	allure serve allure-results -p 4000
+
+report: test allure
+
+.PHONY: test allure report
