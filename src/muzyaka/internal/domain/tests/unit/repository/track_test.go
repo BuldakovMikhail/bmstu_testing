@@ -15,12 +15,12 @@ import (
 	"testing"
 )
 
-type TrackSuite struct {
+type TrackRepoSuite struct {
 	suite.Suite
 	t *testing.T
 }
 
-func (a *TrackSuite) Test_GetTrack_Success(t provider.T) {
+func (a *TrackRepoSuite) Test_GetTrack_Success(t provider.T) {
 	db, mock, err := sqlmock.New()
 	if err != nil {
 		a.t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
@@ -34,10 +34,10 @@ func (a *TrackSuite) Test_GetTrack_Success(t provider.T) {
 		a.t.Fatalf("an error '%s' was not expected when creating gormDB", err)
 	}
 
-	t.Title("[GetTrack] Success")
+	t.Title("[GetTrack (repo)] Success")
 	t.Tags("track")
 	t.Parallel()
-	t.WithNewStep("Success", func(sCtx provider.StepCtx) {
+	t.WithNewStep("[GetTrack (repo)] Success", func(sCtx provider.StepCtx) {
 		trackDao := builders.TrackDaoMetaBuilder{}.
 			WithId(1).
 			WithName("aboba").
@@ -61,7 +61,7 @@ func (a *TrackSuite) Test_GetTrack_Success(t provider.T) {
 	})
 }
 
-func (a *TrackSuite) Test_GetTrack_Error(t provider.T) {
+func (a *TrackRepoSuite) Test_GetTrack_Error(t provider.T) {
 	db, mock, err := sqlmock.New()
 	if err != nil {
 		a.t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
@@ -75,10 +75,10 @@ func (a *TrackSuite) Test_GetTrack_Error(t provider.T) {
 		a.t.Fatalf("an error '%s' was not expected when creating gormDB", err)
 	}
 
-	t.Title("[GetTrack] Error from db")
-	t.Tags("track")
+	t.Title("[GetTrack (repo)] Error from db")
+	t.Tags("track, repo")
 	t.Parallel()
-	t.WithNewStep("Error from db", func(sCtx provider.StepCtx) {
+	t.WithNewStep("[GetTrack (repo)] Error from db", func(sCtx provider.StepCtx) {
 		mock.ExpectQuery("^SELECT (.+) FROM \"tracks\" WHERE id = (.+)$").
 			WithArgs(1, 1).
 			WillReturnError(assert.AnError)
@@ -90,7 +90,7 @@ func (a *TrackSuite) Test_GetTrack_Error(t provider.T) {
 	})
 }
 
-func (a *TrackSuite) Test_GetTracksByPartName_Success(t provider.T) {
+func (a *TrackRepoSuite) Test_GetTracksByPartName_Success(t provider.T) {
 	db, mock, err := sqlmock.New()
 	if err != nil {
 		a.t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
@@ -104,10 +104,10 @@ func (a *TrackSuite) Test_GetTracksByPartName_Success(t provider.T) {
 		a.t.Fatalf("an error '%s' was not expected when creating gormDB", err)
 	}
 
-	t.Title("[GetTracksByPartName] Success")
-	t.Tags("track")
+	t.Title("[GetTracksByPartName (repo)] Success")
+	t.Tags("track, repo")
 	t.Parallel()
-	t.WithNewStep("Success", func(sCtx provider.StepCtx) {
+	t.WithNewStep("[GetTracksByPartName (repo)] Success", func(sCtx provider.StepCtx) {
 		trackDao1 := builders.TrackDaoMetaBuilder{}.
 			WithId(1).
 			WithName("aboba").
@@ -142,7 +142,7 @@ func (a *TrackSuite) Test_GetTracksByPartName_Success(t provider.T) {
 	})
 }
 
-func (a *TrackSuite) Test_GetTracksByPartName_Error(t provider.T) {
+func (a *TrackRepoSuite) Test_GetTracksByPartName_Error(t provider.T) {
 	db, mock, err := sqlmock.New()
 	if err != nil {
 		a.t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
@@ -156,10 +156,10 @@ func (a *TrackSuite) Test_GetTracksByPartName_Error(t provider.T) {
 		a.t.Fatalf("an error '%s' was not expected when creating gormDB", err)
 	}
 
-	t.Title("[GetTracksByPartName] Error from db")
-	t.Tags("track")
+	t.Title("[GetTracksByPartName (repo)] Error from db")
+	t.Tags("track, repo")
 	t.Parallel()
-	t.WithNewStep("Error from db", func(sCtx provider.StepCtx) {
+	t.WithNewStep("[GetTracksByPartName (repo)] Error from db", func(sCtx provider.StepCtx) {
 		mock.ExpectQuery("^SELECT (.+) FROM \"tracks\" WHERE name LIKE(.+)$").
 			WithArgs("%boba%", 2).
 			WillReturnError(assert.AnError)

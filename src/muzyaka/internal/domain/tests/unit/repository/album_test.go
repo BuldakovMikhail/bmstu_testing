@@ -15,12 +15,12 @@ import (
 	"testing"
 )
 
-type AlbumSuite struct {
+type AlbumRepoSuite struct {
 	suite.Suite
 	t *testing.T
 }
 
-func (a *AlbumSuite) Test_GetAlbum_Success(t provider.T) {
+func (a *AlbumRepoSuite) Test_GetAlbum_Success(t provider.T) {
 	db, mock, err := sqlmock.New()
 	if err != nil {
 		a.t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
@@ -34,8 +34,8 @@ func (a *AlbumSuite) Test_GetAlbum_Success(t provider.T) {
 		a.t.Fatalf("an error '%s' was not expected when creating gormDB", err)
 	}
 
-	t.Title("[GetAlbum] Success")
-	t.Tags("album")
+	t.Title("[GetAlbum (repo)] Success")
+	t.Tags("album, repo")
 	t.Parallel()
 	t.WithNewStep("Success", func(sCtx provider.StepCtx) {
 		albumDao := builders.AlbumDaoBuilder{}.
@@ -61,7 +61,7 @@ func (a *AlbumSuite) Test_GetAlbum_Success(t provider.T) {
 	})
 }
 
-func (a *AlbumSuite) Test_GetAlbum_Error(t provider.T) {
+func (a *AlbumRepoSuite) Test_GetAlbum_Error(t provider.T) {
 	db, mock, err := sqlmock.New()
 	if err != nil {
 		a.t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
@@ -75,8 +75,8 @@ func (a *AlbumSuite) Test_GetAlbum_Error(t provider.T) {
 		a.t.Fatalf("an error '%s' was not expected when creating gormDB", err)
 	}
 
-	t.Title("[GetAlbum] Error from db")
-	t.Tags("album")
+	t.Title("[GetAlbum (repo)] Error from db")
+	t.Tags("album, repo")
 	t.Parallel()
 	t.WithNewStep("Error from db", func(sCtx provider.StepCtx) {
 		mock.ExpectQuery("^SELECT (.+) FROM \"albums\" WHERE id = (.+)$").
@@ -90,7 +90,7 @@ func (a *AlbumSuite) Test_GetAlbum_Error(t provider.T) {
 	})
 }
 
-func (a *AlbumSuite) Test_GetAllTracks_Success(t provider.T) {
+func (a *AlbumRepoSuite) Test_GetAllTracks_Success(t provider.T) {
 	db, mock, err := sqlmock.New()
 	if err != nil {
 		a.t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
@@ -104,8 +104,8 @@ func (a *AlbumSuite) Test_GetAllTracks_Success(t provider.T) {
 		a.t.Fatalf("an error '%s' was not expected when creating gormDB", err)
 	}
 
-	t.Title("[GetAllTracks] Success")
-	t.Tags("album")
+	t.Title("[GetAllTracks (repo)] Success")
+	t.Tags("album, repo")
 	t.Parallel()
 	t.WithNewStep("Success", func(sCtx provider.StepCtx) {
 		trackDao := builders.TrackDaoMetaBuilder{}.
@@ -131,7 +131,7 @@ func (a *AlbumSuite) Test_GetAllTracks_Success(t provider.T) {
 	})
 }
 
-func (a *AlbumSuite) Test_GetAllTracks_Error(t provider.T) {
+func (a *AlbumRepoSuite) Test_GetAllTracks_Error(t provider.T) {
 	db, mock, err := sqlmock.New()
 	if err != nil {
 		a.t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
@@ -145,8 +145,8 @@ func (a *AlbumSuite) Test_GetAllTracks_Error(t provider.T) {
 		a.t.Fatalf("an error '%s' was not expected when creating gormDB", err)
 	}
 
-	t.Title("[GetAllTracks] Error from db")
-	t.Tags("album")
+	t.Title("[GetAllTracks (repo)] Error from db")
+	t.Tags("album, repo")
 	t.Parallel()
 	t.WithNewStep("Error from db", func(sCtx provider.StepCtx) {
 		mock.ExpectQuery("^SELECT (.+) FROM \"tracks\" WHERE album_id = (.+)$").

@@ -12,8 +12,8 @@ func TestRunner(t *testing.T) {
 
 	wg := &sync.WaitGroup{}
 	suits := []runner.TestSuite{
-		&AlbumSuite{t: t},
-		&TrackSuite{t: t},
+		&AlbumRepoSuite{t: t},
+		&TrackRepoSuite{t: t},
 	}
 	wg.Add(len(suits))
 

@@ -39,10 +39,10 @@ func (a *TrackSuite) Test_GetTrack_Success(t provider.T) {
 		a.t.Fatalf("an error '%s' was not expected when creating gormDB", err)
 	}
 
-	t.Title("[GetTrack] Success")
-	t.Tags("track")
+	t.Title("[GetTrack (service)] Success")
+	t.Tags("track, service")
 	t.Parallel()
-	t.WithNewStep("Success", func(sCtx provider.StepCtx) {
+	t.WithNewStep("[GetTrack (service)] Success", func(sCtx provider.StepCtx) {
 		trackDao := builders.TrackDaoMetaBuilder{}.
 			WithId(1).
 			WithName("aboba").
@@ -84,10 +84,10 @@ func (a *TrackSuite) Test_GetTrack_Error(t provider.T) {
 		a.t.Fatalf("an error '%s' was not expected when creating gormDB", err)
 	}
 
-	t.Title("[GetTrack] Error from db")
-	t.Tags("track")
+	t.Title("[GetTrack (service)] Error from db")
+	t.Tags("track, service")
 	t.Parallel()
-	t.WithNewStep("Error from db", func(sCtx provider.StepCtx) {
+	t.WithNewStep("[GetTrack (service)] Error from db", func(sCtx provider.StepCtx) {
 		mock.ExpectQuery("^SELECT (.+) FROM \"tracks\" WHERE id = (.+)$").
 			WithArgs(1, 1).
 			WillReturnError(assert.AnError)
@@ -115,10 +115,10 @@ func (a *TrackSuite) Test_GetTracksByPartName_Success(t provider.T) {
 		a.t.Fatalf("an error '%s' was not expected when creating gormDB", err)
 	}
 
-	t.Title("[GetTracksByPartName] Success")
-	t.Tags("track")
+	t.Title("[GetTracksByPartName (service)] Success")
+	t.Tags("track, service")
 	t.Parallel()
-	t.WithNewStep("Success", func(sCtx provider.StepCtx) {
+	t.WithNewStep("[GetTracksByPartName (service)] Success", func(sCtx provider.StepCtx) {
 		trackDao1 := builders.TrackDaoMetaBuilder{}.
 			WithId(1).
 			WithName("aboba").
@@ -169,10 +169,10 @@ func (a *TrackSuite) Test_GetTracksByPartName_Error(t provider.T) {
 		a.t.Fatalf("an error '%s' was not expected when creating gormDB", err)
 	}
 
-	t.Title("[GetTracksByPartName] Error from db")
-	t.Tags("track")
+	t.Title("[GetTracksByPartName (service)] Error from db")
+	t.Tags("track, service")
 	t.Parallel()
-	t.WithNewStep("Error from db", func(sCtx provider.StepCtx) {
+	t.WithNewStep("[GetTracksByPartName (service)] Error from db", func(sCtx provider.StepCtx) {
 		mock.ExpectQuery("^SELECT (.+) FROM \"tracks\" WHERE name LIKE(.+)$").
 			WithArgs("%boba%", usecase.MaxPageSize).
 			WillReturnError(assert.AnError)

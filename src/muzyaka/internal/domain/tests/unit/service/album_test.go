@@ -22,10 +22,10 @@ func (a *AlbumSuite) Test_GetAlbum_Success(t provider.T) {
 	c := gomock.NewController(t)
 	defer c.Finish()
 
-	t.Title("[GetAlbum] Success")
-	t.Tags("album")
+	t.Title("[GetAlbum (service)] Success")
+	t.Tags("album, service")
 	t.Parallel()
-	t.WithNewStep("Success", func(sCtx provider.StepCtx) {
+	t.WithNewStep("[GetAlbum (service)] Success", func(sCtx provider.StepCtx) {
 		respAlbum := builders.AlbumBuilder{}.
 			WithId(1).
 			WithName("test").
@@ -47,10 +47,10 @@ func (a *AlbumSuite) Test_GetAlbum_Error(t provider.T) {
 	c := gomock.NewController(t)
 	defer c.Finish()
 
-	t.Title("[GetAlbum] Error from repository")
-	t.Tags("album")
+	t.Title("[GetAlbum (service)] Error from repository")
+	t.Tags("album, service")
 	t.Parallel()
-	t.WithNewStep("Error from repository", func(sCtx provider.StepCtx) {
+	t.WithNewStep("[GetAlbum (service)] Error from repository", func(sCtx provider.StepCtx) {
 		repo := mock_repository.NewMockAlbumRepository(c)
 		repo.EXPECT().GetAlbum(uint64(1)).Return(nil, assert.AnError)
 
@@ -65,10 +65,10 @@ func (a *AlbumSuite) Test_GetAllTracks_Success(t provider.T) {
 	c := gomock.NewController(t)
 	defer c.Finish()
 
-	t.Title("[GetAllTracks] Success")
-	t.Tags("album")
+	t.Title("[GetAllTracks (service)] Success")
+	t.Tags("album, service")
 	t.Parallel()
-	t.WithNewStep("Success", func(sCtx provider.StepCtx) {
+	t.WithNewStep("[GetAllTracks (service)] Success", func(sCtx provider.StepCtx) {
 		var respTracks []*models.TrackMeta
 		respTracks = append(respTracks, mother.TrackMetaObjectMother{}.DefaultTrack())
 
@@ -87,10 +87,10 @@ func (a *AlbumSuite) Test_GetAllTracks_ErrorFromRepo(t provider.T) {
 	c := gomock.NewController(t)
 	defer c.Finish()
 
-	t.Title("[GetAllTracks] Error from repository")
-	t.Tags("album")
+	t.Title("[GetAllTracks (service)] Error from repository")
+	t.Tags("album, service")
 	t.Parallel()
-	t.WithNewStep("Error from repository", func(sCtx provider.StepCtx) {
+	t.WithNewStep("[GetAllTracks (service)] Error from repository", func(sCtx provider.StepCtx) {
 		repo := mock_repository.NewMockAlbumRepository(c)
 		repo.EXPECT().GetAllTracks(uint64(1)).Return(nil, assert.AnError)
 
