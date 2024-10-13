@@ -62,3 +62,18 @@ func (t TrackDaoMetaBuilder) Build() *dao.Track {
 		AlbumID: t.AlbumID,
 	}
 }
+
+type TrackObjectBuilder struct {
+	Payload []byte
+}
+
+func (t TrackObjectBuilder) WithPayload(payload []byte) TrackObjectBuilder {
+	t.Payload = payload
+	return t
+}
+
+func (t TrackObjectBuilder) Build() *models.TrackObject {
+	return &models.TrackObject{
+		Payload: t.Payload,
+	}
+}

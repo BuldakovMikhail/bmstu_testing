@@ -13,15 +13,6 @@ func (Album) TableName() string {
 	return "albums"
 }
 
-func ToPostgresAlbum(e *models.Album, musicianId uint64) *Album {
-	return &Album{
-		ID:         e.Id,
-		Name:       e.Name,
-		Cover:      e.CoverFile,
-		MusicianID: musicianId,
-	}
-}
-
 func ToModelAlbum(e *Album) *models.Album {
 	return &models.Album{
 		Id:        e.ID,

@@ -1,7 +1,6 @@
 package integration
 
 import (
-	"github.com/golang/mock/gomock"
 	"github.com/ozontech/allure-go/pkg/framework/provider"
 	"github.com/ozontech/allure-go/pkg/framework/suite"
 	"src/internal/domain/album/repository/postgres"
@@ -17,9 +16,6 @@ type AlbumIntegrationSuite struct {
 }
 
 func (a *AlbumIntegrationSuite) Test_GetAlbum_Success(t provider.T) {
-	c := gomock.NewController(t)
-	defer c.Finish()
-
 	t.Title("[GetAlbum (integration)] Success")
 	t.Tags("album, integration")
 	t.Parallel()
@@ -40,9 +36,6 @@ func (a *AlbumIntegrationSuite) Test_GetAlbum_Success(t provider.T) {
 }
 
 func (a *AlbumIntegrationSuite) Test_GetAlbum_NotFound(t provider.T) {
-	c := gomock.NewController(t)
-	defer c.Finish()
-
 	t.Title("[GetAlbum (integration)] Not Found")
 	t.Tags("album, integration")
 	t.Parallel()
@@ -57,9 +50,6 @@ func (a *AlbumIntegrationSuite) Test_GetAlbum_NotFound(t provider.T) {
 }
 
 func (a *AlbumIntegrationSuite) Test_GetAllTracks_Success(t provider.T) {
-	c := gomock.NewController(t)
-	defer c.Finish()
-
 	t.Title("[GetAllTracks (integration)] Success")
 	t.Tags("album, integration")
 	t.Parallel()
@@ -79,9 +69,6 @@ func (a *AlbumIntegrationSuite) Test_GetAllTracks_Success(t provider.T) {
 }
 
 func (a *AlbumIntegrationSuite) Test_GetAllTracks_NotFound(t provider.T) {
-	c := gomock.NewController(t)
-	defer c.Finish()
-
 	t.Title("[GetAllTracks (integration)] Not Found")
 	t.Tags("album, integration")
 	t.Parallel()

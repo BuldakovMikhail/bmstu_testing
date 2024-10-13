@@ -9,7 +9,6 @@ import "src/cmd/muzyaka"
 // @host localhost:8080
 // @BasePath /
 
-// @securityDefinitions.apikey ApiKeyAuth
 // @in header
 // @name Authorization
 

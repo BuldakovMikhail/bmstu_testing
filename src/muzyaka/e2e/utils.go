@@ -1,84 +1,56 @@
-package dbhelpers
+package e2e
 
 import (
 	"context"
 	"github.com/rs/zerolog/log"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
-	"src/internal/lib/testhelpers"
 	"src/internal/lib/testing/builders"
 	"src/internal/lib/testing/mother"
 	"src/internal/models/dao"
-	"time"
 )
 
-type TestDatabaseMeta struct {
-	DB        *gorm.DB
-	Container *testhelpers.PostgresContainer
-	IDs       map[string]uint64
-}
+const dsn = "host=localhost user=postgres password=123 dbname=postgres port=5432"
 
-func CreateDatabase(ctx context.Context) (*TestDatabaseMeta, error) {
-	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
-	defer cancel()
-
-	pgContainer, err := testhelpers.CreatePostgresContainer(ctx)
+func InitDatabase(ctx context.Context) (*gorm.DB, map[string]uint64, error) {
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
-		return nil, err
-	}
-
-	db, err := gorm.Open(postgres.Open(pgContainer.ConnectionString), &gorm.Config{})
-	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	var ids = make(map[string]uint64)
 
 	musicianId, err := initMusicianTable(db)
 	if err != nil {
-		pgContainer.Terminate(ctx)
-		return nil, err
+		return nil, nil, err
 	}
 	ids["musicianId"] = musicianId
 
 	albumId, err := initAlbumTable(db, musicianId)
 	if err != nil {
-		pgContainer.Terminate(ctx)
-		return nil, err
+		return nil, nil, err
 	}
 	ids["albumId"] = albumId
 
 	trackId, err := initTrackTable(db, albumId)
 	if err != nil {
-		pgContainer.Terminate(ctx)
-		return nil, err
+		return nil, nil, err
 	}
 	ids["trackId"] = trackId
 
-	return &TestDatabaseMeta{
-		DB:        db,
-		Container: pgContainer,
-		IDs:       ids,
-	}, nil
+	return db, ids, nil
 }
 
-func (t *TestDatabaseMeta) Terminate(ctx context.Context) {
-	defer func() {
-		err := t.Container.Terminate(ctx)
-		if err != nil {
-			log.Error().Err(err)
-		}
-	}()
-
-	if err := t.DB.Delete(&dao.Track{}, t.IDs["trackId"]).Error; err != nil {
+func ClearTestDB(db *gorm.DB, ids map[string]uint64) {
+	if err := db.Delete(&dao.Track{}, ids["trackId"]).Error; err != nil {
 		log.Error().Err(err)
 	}
 
-	if err := t.DB.Delete(&dao.Album{}, t.IDs["albumId"]).Error; err != nil {
+	if err := db.Delete(&dao.Album{}, ids["albumId"]).Error; err != nil {
 		log.Error().Err(err)
 	}
 
-	if err := t.DB.Delete(&dao.Musician{}, t.IDs["musicianId"]).Error; err != nil {
+	if err := db.Delete(&dao.Musician{}, ids["musicianId"]).Error; err != nil {
 		log.Error().Err(err)
 	}
 }

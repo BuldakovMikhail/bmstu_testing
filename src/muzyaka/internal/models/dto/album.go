@@ -8,7 +8,6 @@ type Album struct {
 	Id        uint64 `json:"id"`
 	Name      string `json:"name"`
 	CoverFile []byte `json:"cover_file"`
-	Type      string `json:"type"`
 }
 
 type AlbumWithoutId struct {
@@ -39,7 +38,6 @@ func ToDtoAlbum(a *models.Album) *Album {
 		Id:        a.Id,
 		Name:      a.Name,
 		CoverFile: a.CoverFile,
-		Type:      a.Type,
 	}
 }
 
@@ -48,7 +46,6 @@ func ToModelAlbum(a *Album) *models.Album {
 		Id:        a.Id,
 		Name:      a.Name,
 		CoverFile: a.CoverFile,
-		Type:      a.Type,
 	}
 }
 
@@ -57,6 +54,5 @@ func ToModelAlbumWithId(id uint64, a *AlbumWithoutId) *models.Album {
 		Id:        id,
 		Name:      a.Name,
 		CoverFile: a.CoverFile,
-		Type:      a.Type,
 	}
 }
