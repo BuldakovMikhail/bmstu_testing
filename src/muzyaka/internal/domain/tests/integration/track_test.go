@@ -2,11 +2,11 @@ package integration
 
 import (
 	"github.com/ozontech/allure-go/pkg/framework/suite"
-	"src/internal/domain/track/usecase"
+	dbhelpers "src/internal/lib/testing/db"
 )
 
 type TrackIntegrationSuite struct {
 	suite.Suite
 
-	service usecase.TrackUseCase
+	TestDB *dbhelpers.TestDatabaseMeta
 }

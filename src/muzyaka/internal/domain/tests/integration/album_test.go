@@ -5,7 +5,6 @@ import (
 	"github.com/ozontech/allure-go/pkg/framework/provider"
 	"github.com/ozontech/allure-go/pkg/framework/suite"
 	"src/internal/domain/album/repository/postgres"
-	"src/internal/domain/album/usecase"
 	"src/internal/lib/testing/builders"
 	dbhelpers "src/internal/lib/testing/db"
 	"src/internal/models"
@@ -32,7 +31,7 @@ func (a *AlbumIntegrationSuite) Test_GetAlbum_Success(t provider.T) {
 			Build()
 		repo := postgres.NewAlbumRepository(a.TestDB.DB)
 
-		respAlbum, err := usecase.NewAlbumUseCase(repo).GetAlbum(a.TestDB.IDs["albumId"])
+		respAlbum, err := repo.GetAlbum(a.TestDB.IDs["albumId"])
 
 		sCtx.Assert().NoError(err)
 		sCtx.Assert().NotNil(respAlbum)
@@ -50,7 +49,7 @@ func (a *AlbumIntegrationSuite) Test_GetAlbum_NotFound(t provider.T) {
 	t.WithNewStep("[GetAlbum (integration)] Not Found", func(sCtx provider.StepCtx) {
 		repo := postgres.NewAlbumRepository(a.TestDB.DB)
 
-		respAlbum, err := usecase.NewAlbumUseCase(repo).GetAlbum(a.TestDB.IDs["albumId"] + 1)
+		respAlbum, err := repo.GetAlbum(a.TestDB.IDs["albumId"] + 1)
 
 		sCtx.Assert().Error(err)
 		sCtx.Assert().Nil(respAlbum)
@@ -71,7 +70,7 @@ func (a *AlbumIntegrationSuite) Test_GetAllTracks_Success(t provider.T) {
 			Build()
 		repo := postgres.NewAlbumRepository(a.TestDB.DB)
 
-		respTracks, err := usecase.NewAlbumUseCase(repo).GetAllTracks(a.TestDB.IDs["albumId"])
+		respTracks, err := repo.GetAllTracks(a.TestDB.IDs["albumId"])
 
 		sCtx.Assert().NoError(err)
 		sCtx.Assert().NotNil(respTracks)
@@ -89,7 +88,7 @@ func (a *AlbumIntegrationSuite) Test_GetAllTracks_NotFound(t provider.T) {
 	t.WithNewStep("[GetAllTracks (integration)] Not Found", func(sCtx provider.StepCtx) {
 		repo := postgres.NewAlbumRepository(a.TestDB.DB)
 
-		respTracks, err := usecase.NewAlbumUseCase(repo).GetAllTracks(a.TestDB.IDs["albumId"] + 1)
+		respTracks, err := repo.GetAllTracks(a.TestDB.IDs["albumId"] + 1)
 
 		sCtx.Assert().Error(err)
 		sCtx.Assert().Nil(respTracks)
