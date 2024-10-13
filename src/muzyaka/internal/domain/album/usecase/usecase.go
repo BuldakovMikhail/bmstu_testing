@@ -46,5 +46,5 @@ func (u *usecase) GetAllTracks(albumId uint64) ([]*models.TrackMeta, error) {
 		return nil, errors.Wrap(err, "album.usecase.GetAllTracks error while get")
 	}
 
-	return tracks, err
+	return tracks, nil
 }

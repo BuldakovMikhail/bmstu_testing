@@ -20,9 +20,12 @@ func (ar *albumRepository) GetAllTracks(albumId uint64) ([]*models.TrackMeta, er
 	var tempTracks []*dao.Track
 
 	tx := ar.db.Limit(dao.MaxLimit).Find(&tempTracks, "album_id = ?", albumId)
-
 	if tx.Error != nil {
 		return nil, errors.Wrap(tx.Error, "database error (table album)")
+	}
+
+	if len(tempTracks) == 0 {
+		return nil, gorm.ErrRecordNotFound
 	}
 
 	var tracks []*models.TrackMeta

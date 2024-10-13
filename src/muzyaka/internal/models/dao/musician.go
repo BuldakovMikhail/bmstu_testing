@@ -3,9 +3,8 @@ package dao
 import "src/internal/models"
 
 type Musician struct {
-	ID          uint64 `gorm:"column:id"`
-	Name        string `gorm:"column:name"`
-	Description string `gorm:"column:description"`
+	ID   uint64 `gorm:"column:id"`
+	Name string `gorm:"column:name"`
 }
 
 func (Musician) TableName() string {
@@ -24,9 +23,8 @@ func (MusicianPhotos) TableName() string {
 
 func ToPostgresMusician(musician *models.Musician) *Musician {
 	return &Musician{
-		ID:          musician.Id,
-		Name:        musician.Name,
-		Description: musician.Description,
+		ID:   musician.Id,
+		Name: musician.Name,
 	}
 }
 
@@ -49,9 +47,8 @@ func ToModelMusician(musician *Musician, photos []*MusicianPhotos) *models.Music
 	}
 
 	return &models.Musician{
-		Id:          musician.ID,
-		Name:        musician.Name,
-		PhotoFiles:  res,
-		Description: musician.Description,
+		Id:         musician.ID,
+		Name:       musician.Name,
+		PhotoFiles: res,
 	}
 }
