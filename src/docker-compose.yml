@@ -46,3 +46,11 @@ services:
         limits:
           cpus: '1'
           memory: 4G
+  backend:
+    container_name: backend
+    build: ./muzyaka
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "8080:8080"

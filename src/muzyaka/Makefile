@@ -12,3 +12,46 @@ allure:
 
 report: test allure
 
+ci-unit:
+	export ALLURE_OUTPUT_PATH="${GITHUB_WORKSPACE}" && \
+ 	export ALLURE_OUTPUT_FOLDER="unit-allure" && \
+ 	go test ./internal/domain/tests/unit/... --race
+
+local-unit:
+	export ALLURE_OUTPUT_PATH="/mnt/c/sem7/bmstu_testing/src/muzyaka" && \
+ 	go test ./internal/domain/tests/unit/... --race
+
+ci-integration:
+	export ALLURE_OUTPUT_PATH="${GITHUB_WORKSPACE}" && \
+	export ALLURE_OUTPUT_FOLDER="integration-allure" && \
+	go test ./internal/domain/tests/integration/... --race
+
+local-integration:
+	export ALLURE_OUTPUT_PATH="/mnt/c/sem7/bmstu_testing/src/muzyaka" && \
+	go test ./internal/domain/tests/integration/... --race
+
+ci-e2e:
+	docker compose up
+	export ALLURE_OUTPUT_PATH="${GITHUB_WORKSPACE}" && \
+	export ALLURE_OUTPUT_FOLDER="e2e-allure" && \
+	go test ./e2e/... --race
+	docker compose down
+	docker image rm testing-backend:latest bitnami/postgresql:16 alpine:latest
+
+local-e2e:
+	docker compose up
+	export ALLURE_OUTPUT_PATH="/mnt/c/sem7/bmstu_testing/src/muzyaka" && \
+	go test ./e2e/... --race
+
+rm-compose:
+	docker compose down
+	docker image rm testing-backend:latest
+
+ci-concat-reports:
+	mkdir allure-results
+	cp unit-allure/* allure-results/
+	cp integration-allure/* allure-results/
+	cp e2e-allure/* allure-results/
+	cp environment.properties allure-results
+
+.PHONY: test allure report ci-unit local-unit ci-integration local-integration ci-e2e local-e2e rm-compose ci-concat-reports
