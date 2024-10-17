@@ -14,16 +14,16 @@ jobs:
           go-version: '1.23.1'
 
       - name: Run unit tests
-        run: make ci-unit
+        run: make -C ./src ci-unit
 
       - name: Run integration tests
-        run: make ci-integration -i
+        run: make -C ./src ci-integration -i
 
       - name: Run E2E tests
-        run: make ci-e2e -i
+        run: make -C ./src ci-e2e -i
 
       - name: Processing report data
-        run: make ci-concat-reports -i
+        run: make -C ./src ci-concat-reports -i
         if: always()
         continue-on-error: true
 
