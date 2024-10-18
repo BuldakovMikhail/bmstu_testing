@@ -79,7 +79,7 @@ func App() {
 
 	log.Info().Msg("stopping server")
 
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 240*time.Second)
 	defer cancel()
 
 	if err := srv.Shutdown(ctx); err != nil {

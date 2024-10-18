@@ -19,7 +19,7 @@ type TestDatabaseMeta struct {
 }
 
 func CreateDatabase(ctx context.Context) (*TestDatabaseMeta, error) {
-	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
+	ctx, cancel := context.WithTimeout(ctx, 240*time.Second)
 	defer cancel()
 
 	pgContainer, err := testhelpers.CreatePostgresContainer(ctx)
