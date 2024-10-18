@@ -48,10 +48,10 @@ rm-compose:
 	docker image rm testing-backend:latest
 
 ci-concat-reports:
-	mkdir allure-results
-	cp unit-allure/* allure-results/
-	cp integration-allure/* allure-results/
-	cp e2e-allure/* allure-results/
-	cp environment.properties allure-results
+	mkdir ../../allure-results
+	cp ../../unit-allure/* ../../allure-results/
+	cp ../../integration-allure/* ../../allure-results/
+	cp ../../e2e-allure/* ../../allure-results/
+	cp ../../environment.properties ../../allure-results
 
 .PHONY: test allure report ci-unit local-unit ci-integration local-integration ci-e2e local-e2e rm-compose ci-concat-reports
