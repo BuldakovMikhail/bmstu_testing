@@ -35,7 +35,7 @@ func App() {
 	done := make(chan os.Signal, 1)
 	signal.Notify(done, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
 
-	dsn := "host=postgres user=postgres password=123 dbname=postgres port=5432"
+	dsn := "host=db user=postgres password=123 dbname=postgres port=5432"
 	db, err := gorm.Open(postgres2.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Error().Err(err)

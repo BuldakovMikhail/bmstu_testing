@@ -1,7 +1,7 @@
 version: '3'
 services:
-  postgres:
-    container_name: postgres
+  db:
+    container_name: db
     build: ./database
 #    healthcheck:
 #      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
@@ -19,7 +19,7 @@ services:
     container_name: backend
     build: ./muzyaka
     depends_on:
-      - postgres
+      - db
     #    depends_on:
 #      postgres:
 #        condition: service_healthy
