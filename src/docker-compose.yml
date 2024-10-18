@@ -3,6 +3,11 @@ services:
   postgres:
     container_name: postgres
     build: ./database
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
     environment:
       POSTGRES_DB: "postgres"
       POSTGRES_USER: "postgres"
@@ -13,6 +18,7 @@ services:
     container_name: backend
     build: ./muzyaka
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     ports:
       - "8080:8080"
