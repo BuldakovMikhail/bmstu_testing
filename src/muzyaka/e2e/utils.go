@@ -10,7 +10,7 @@ import (
 	"src/internal/models/dao"
 )
 
-const dsn = "host=localhost user=postgres password=123 dbname=postgres port=5432"
+const dsn = "host=postgres user=postgres password=123 dbname=postgres port=5432"
 
 func InitDatabase(ctx context.Context) (*gorm.DB, map[string]uint64, error) {
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
