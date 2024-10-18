@@ -40,8 +40,8 @@ jobs:
         if: always()
         with:
           gh_pages: gh-pages
-          allure_history: allure-history
-          allure_results: allure-results
+          allure_history: ./src/muzyaka/allure-reports
+          allure_results: ./src/muzyaka/allure-results
 
       - name: Publish test report
         uses: peaceiris/actions-gh-pages@v3
@@ -49,4 +49,4 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_branch: gh-pages
-          publish_dir: allure-history
+          publish_dir: ./src/muzyaka/allure-reports
