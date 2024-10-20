@@ -33,7 +33,7 @@ func (a *AlbumSuite) Test_GetAlbum_Success(t provider.T) {
 			Build()
 
 		repo := mock_repository.NewMockAlbumRepository(c)
-		repo.EXPECT().GetAlbum(uint64(2)).Return(respAlbum, nil)
+		repo.EXPECT().GetAlbum(uint64(1)).Return(respAlbum, nil)
 
 		album, err := usecase.NewAlbumUseCase(repo).GetAlbum(1)
 
