@@ -17,10 +17,10 @@ jobs:
         run: make -C ./src/muzyaka ci-unit
 
       - name: Run integration tests
-        run: make -C ./src/muzyaka ci-integration -i
+        run: make -C ./src/muzyaka ci-integration
 
       - name: Run E2E tests
-        run: make -C ./src/muzyaka ci-e2e -i
+        run: make -C ./src/muzyaka ci-e2e
 
       - name: Processing report data
         run: make -C ./src/muzyaka ci-concat-reports -i
