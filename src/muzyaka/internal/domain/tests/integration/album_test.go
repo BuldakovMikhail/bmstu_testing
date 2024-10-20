@@ -29,7 +29,7 @@ func (a *AlbumIntegrationSuite) Test_GetAlbum_Success(t provider.T) {
 
 		respAlbum, err := repo.GetAlbum(a.TestDB.IDs["albumId"])
 
-		sCtx.Assert().Error(err)
+		sCtx.Assert().NoError(err)
 		sCtx.Assert().NotNil(respAlbum)
 		sCtx.Assert().Equal(album, respAlbum)
 	})
