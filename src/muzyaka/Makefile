@@ -31,21 +31,14 @@ local-integration:
 	go test ./internal/domain/tests/integration/... --race
 
 ci-e2e:
-	docker compose up -d
 	export ALLURE_OUTPUT_PATH="${GITHUB_WORKSPACE}" && \
-	export ALLURE_OUTPUT_FOLDER="e2e-allure" && \
+    export ALLURE_OUTPUT_FOLDER="e2e-allure" && \
 	go test ./e2e/... --race
-	docker compose down
-	docker image rm testing-backend:latest bitnami/postgresql:16 alpine:latest
 
 local-e2e:
-	docker compose up -d
 	export ALLURE_OUTPUT_PATH="/mnt/c/sem7/bmstu_testing/src/muzyaka" && \
 	go test ./e2e/... --race
 
-rm-compose:
-	docker compose down
-	docker image rm testing-backend:latest
 
 ci-concat-reports:
 	mkdir ../../allure-results
@@ -54,4 +47,4 @@ ci-concat-reports:
 	cp ../../e2e-allure/* ../../allure-results/
 	cp ../../environment.properties ../../allure-results
 
-.PHONY: test allure report ci-unit local-unit ci-integration local-integration ci-e2e local-e2e rm-compose ci-concat-reports
+.PHONY: test allure report ci-unit local-unit ci-integration local-integration ci-e2e local-e2e ci-concat-reports
