@@ -1,13 +1,14 @@
 package e2e
 
 import (
-	"github.com/go-chi/render"
-	"github.com/ozontech/allure-go/pkg/framework/provider"
-	"github.com/ozontech/allure-go/pkg/framework/suite"
 	"net/http"
 	url2 "net/url"
 	"src/internal/models/dto"
 	"strconv"
+
+	"github.com/go-chi/render"
+	"github.com/ozontech/allure-go/pkg/framework/provider"
+	"github.com/ozontech/allure-go/pkg/framework/suite"
 )
 
 type E2ESuite struct {
@@ -30,7 +31,7 @@ func (s *E2ESuite) Test_SearchTrack(t provider.T) {
 			"page":      {strconv.Itoa(-1)},
 			"page_size": {strconv.Itoa(-1)},
 		}.Encode()
-
+		request.Close = true
 		resp, err := s.client.Do(request)
 		if err != nil {
 			t.Fatalf("Error during request: %s", err.Error())

@@ -1,14 +1,16 @@
 package delivery
 
 import (
-	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/render"
 	"net/http"
 	"src/internal/domain/track/usecase"
 	"src/internal/lib/api/response"
 	"src/internal/models"
 	"src/internal/models/dto"
 	"strconv"
+
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/render"
+	"github.com/rs/zerolog/log"
 )
 
 // @Summary GetTrack
@@ -62,6 +64,7 @@ func GetTrack(useCase usecase.TrackUseCase) http.HandlerFunc {
 // @Router /api/track [get]
 func FindTracks(useCase usecase.TrackUseCase) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		log.Info().Msg("/api/track recieved")
 		name := r.URL.Query().Get("q")
 		if name == "" {
 			render.Status(r, http.StatusBadRequest)
@@ -89,6 +92,8 @@ func FindTracks(useCase usecase.TrackUseCase) http.HandlerFunc {
 		if err != nil {
 			render.Status(r, http.StatusInternalServerError)
 			render.JSON(w, r, response.Error(err.Error()))
+
+			log.Error().Msgf("error occured %s", err.Error())
 			return
 		}
 

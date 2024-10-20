@@ -18,11 +18,11 @@ type TestDatabaseMeta struct {
 	IDs       map[string]uint64
 }
 
-func CreateDatabase(ctx context.Context) (*TestDatabaseMeta, error) {
+func CreateDatabase(ctx context.Context, pathToInitScript string) (*TestDatabaseMeta, error) {
 	ctx, cancel := context.WithTimeout(ctx, 240*time.Second)
 	defer cancel()
 
-	pgContainer, err := testhelpers.CreatePostgresContainer(ctx)
+	pgContainer, err := testhelpers.CreatePostgresContainer(ctx, pathToInitScript)
 	if err != nil {
 		return nil, err
 	}

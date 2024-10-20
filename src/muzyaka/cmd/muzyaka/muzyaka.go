@@ -2,11 +2,6 @@ package muzyaka
 
 import (
 	"context"
-	"github.com/go-chi/chi/v5"
-	"github.com/rs/zerolog/log"
-	httpSwagger "github.com/swaggo/http-swagger"
-	postgres2 "gorm.io/driver/postgres"
-	"gorm.io/gorm"
 	"net/http"
 	"os"
 	"os/signal"
@@ -19,6 +14,11 @@ import (
 	usecase2 "src/internal/domain/track/usecase"
 	"syscall"
 	"time"
+
+	"github.com/go-chi/chi/v5"
+	"github.com/rs/zerolog/log"
+	httpSwagger "github.com/swaggo/http-swagger"
+	"gorm.io/gorm"
 )
 
 const (
@@ -27,25 +27,13 @@ const (
 	envProd  = "prod"
 )
 
-// TODO: мб не полагаться на проверки от репозитория, а осуществлять проверки в юзкейсах
-// TODO: не создавать бакет если он уже существует?
-func App() {
+func App(db *gorm.DB) {
 	log.Info().Msg("Logger init")
 
 	done := make(chan os.Signal, 1)
 	signal.Notify(done, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
 
-	dsn := "host=db user=postgres password=123 dbname=postgres port=5432"
-	db, err := gorm.Open(postgres2.Open(dsn), &gorm.Config{})
-	if err != nil {
-		log.Error().Err(err)
-	}
-
 	ctx := context.Background()
-
-	if err != nil {
-		log.Error().Err(err)
-	}
 
 	albumRep := postgres.NewAlbumRepository(db)
 	trackRep := postgres3.NewTrackRepository(db)

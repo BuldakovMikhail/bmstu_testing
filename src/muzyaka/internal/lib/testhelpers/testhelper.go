@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"github.com/docker/go-connections/nat"
-	"path/filepath"
 	"time"
 
 	"github.com/testcontainers/testcontainers-go"
@@ -37,11 +36,11 @@ type Container struct {
 	RootPassword string
 }
 
-func CreatePostgresContainer(ctx context.Context) (*PostgresContainer, error) {
+func CreatePostgresContainer(ctx context.Context, pathToInitScript string) (*PostgresContainer, error) {
 	pgContainer, err := postgres.RunContainer(ctx,
 		testcontainers.WithImage("postgres:15.3-alpine"),
 
-		postgres.WithInitScripts(filepath.Join("..", "..", "..", "..", "..", "database", "docker-entrypoint-initdb.d", "01-init.sql")),
+		postgres.WithInitScripts(pathToInitScript),
 		postgres.WithDatabase("test-db"),
 		postgres.WithUsername("postgres"),
 		postgres.WithPassword("postgres"),
