@@ -31,3 +31,5 @@ allure-*
 
 .history
 var
+results
+grafana
