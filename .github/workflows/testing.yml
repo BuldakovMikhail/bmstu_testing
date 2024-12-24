@@ -3,7 +3,36 @@ name: Go tests
 on: [push]
 
 jobs:
+  lint:
+      runs-on: ubuntu-latest
+      environment: test-env
+
+      steps:
+        - name: Install Go
+          uses: actions/setup-go@v3
+          with:
+            go-version: 1.23
+
+        - name: Check out repository
+          uses: actions/checkout@v2
+        
+        - name: Install golint and go vet
+          run: |
+            go install github.com/rauzh/go-complexity-analysis/cmd/complexity@9a7cad4
+            go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.62.2
+
+        - name: Launch govet
+          run: |
+            go vet -vettool="$(which complexity)" --cycloover 10 --halsteadover 40 ./...
+            if [ $? -ne 0 ]; then exit 1; fi
+
+        - name: Launch golint
+          run: |
+            golangci-lint run cmd/... config/... internal/... pkg/...
+            if [ $? -ne 0 ]; then exit 1; fi
+  
   build_and_test:
+  needs: lint
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
