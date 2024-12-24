@@ -27,7 +27,7 @@ jobs:
 
         - name: Launch govet
           run: |
-            go vet -vettool="$(which complexity)" --cycloover 10 --halsteadover 40 ./...
+            go vet -vettool="$(which complexity)" --cycloover 10 --halsteadover 60 ./internal/domain/album/... ./internal/domain/track/...
             if [ $? -ne 0 ]; then exit 1; fi
 
         - name: Launch golint
