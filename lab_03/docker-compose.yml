@@ -70,3 +70,17 @@ services:
     depends_on:
       - prometheus
     entrypoint: ["/bin/sh", "-c", "go run prometheus/fasthttp/core.go"]
+
+  chi-ping:
+    image: go_env:latest
+    deploy:
+      resources:
+        limits:
+          cpus: '1'  # Максимум 50% доступных процессоров
+          memory: '400M'  # Максимум 256 МБ памяти
+    container_name: chi-ping
+    ports:
+      - "8083:8081"
+    depends_on:
+      - prometheus
+    entrypoint: [ "/bin/sh", "-c", "go run prometheus/chi/core.go" ]
