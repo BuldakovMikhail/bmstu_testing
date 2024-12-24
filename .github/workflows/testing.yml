@@ -27,12 +27,12 @@ jobs:
 
         - name: Launch govet
           run: |
-            go vet -vettool="$(which complexity)" --cycloover 10 --halsteadover 60 ./internal/domain/album/... ./internal/domain/track/...
+            go vet -vettool="$(which complexity)" --cycloover 10 --halsteadover 40 ./internal/domain/album/... ./internal/domain/track/...
             if [ $? -ne 0 ]; then exit 1; fi
 
         - name: Launch golint
           run: |
-            golangci-lint run ./cmd/... ./internal/...
+            golangci-lint run ./...
             if [ $? -ne 0 ]; then exit 0; fi
   
   build_and_test:
