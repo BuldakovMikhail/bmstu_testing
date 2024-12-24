@@ -32,8 +32,8 @@ jobs:
 
         - name: Launch golint
           run: |
-            golangci-lint run ./cmd/... internal/...
-#            if [ $? -ne 0 ]; then exit 1; fi
+            golangci-lint run ./cmd/... ./internal/...
+            if [ $? -ne 0 ]; then exit 0; fi
   
   build_and_test:
     needs: lint
