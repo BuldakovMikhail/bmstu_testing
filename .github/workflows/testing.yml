@@ -1,6 +1,10 @@
 name: Go tests
 
-on: [push]
+on:
+  push:
+    branches:
+      - main
+      - lab_02
 
 jobs:
   lint:
