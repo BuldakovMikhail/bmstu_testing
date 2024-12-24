@@ -23,12 +23,12 @@ jobs:
 
         - name: Launch govet
           run: |
-            go vet -vettool="$(which complexity)" --cycloover 10 --halsteadover 40 ./src/muzyaka/...
+            go vet -vettool="$(which complexity)" --cycloover 10 --halsteadover 40 ./src/muzyaka
             if [ $? -ne 0 ]; then exit 1; fi
 
         - name: Launch golint
           run: |
-            golangci-lint run ./src/muzyakacmd/... ./src/muzyaka/internal/... 
+            golangci-lint run ./src/muzyaka/cmd/... ./src/muzyaka/internal/... 
             if [ $? -ne 0 ]; then exit 1; fi
   
   build_and_test:
