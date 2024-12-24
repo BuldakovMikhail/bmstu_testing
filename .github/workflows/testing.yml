@@ -32,8 +32,8 @@ jobs:
 
         - name: Launch golint
           run: |
-            golangci-lint run cmd/... internal/... 
-            if [ $? -ne 0 ]; then exit 1; fi
+            golangci-lint run ./cmd/... internal/...
+#            if [ $? -ne 0 ]; then exit 1; fi
   
   build_and_test:
     needs: lint
@@ -47,16 +47,16 @@ jobs:
           go-version: '1.23.1'
 
       - name: Run unit tests
-        run: make -C ./src/muzyaka ci-unit
+        run: make -C . ci-unit
 
       - name: Run integration tests
-        run: make -C ./src/muzyaka ci-integration
+        run: make -C . ci-integration
 
       - name: Run E2E tests
-        run: make -C ./src/muzyaka ci-e2e
+        run: make -C . ci-e2e
 
       - name: Processing report data
-        run: make -C ./src/muzyaka ci-concat-reports -i
+        run: make -C . ci-concat-reports -i
         if: always()
         continue-on-error: true
 
