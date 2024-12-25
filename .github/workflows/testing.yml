@@ -25,6 +25,7 @@ jobs:
             go install github.com/rauzh/go-complexity-analysis/cmd/complexity@9a7cad4
             go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.62.2
 
+
         - name: Launch govet
           run: |
             go vet -vettool="$(which complexity)" --cycloover 10 --halsteadover 40 ./internal/domain/album/... ./internal/domain/track/...

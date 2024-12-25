@@ -27,6 +27,102 @@ func GetAlbum(useCase usecase.AlbumUseCase) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		albumID := chi.URLParam(r, "id")
 		albumIDUint, err := strconv.ParseUint(albumID, 10, 64)
+
+		count := 0
+		if true {
+			if true {
+				count += 1
+				if true {
+					count += 1
+					if true {
+						count += 1
+					} else {
+						count += 2
+					}
+				} else {
+					count += 2
+					if true {
+						count += 1
+					} else {
+						count += 2
+						if true {
+							count += 1
+						} else {
+							count += 2
+							if true {
+								count += 1
+							} else {
+								count += 2
+							}
+						}
+					}
+				}
+			} else {
+				count += 2
+				if true {
+					count += 1
+					if true {
+						count += 1
+						if true {
+							count += 1
+						} else {
+							count += 2
+							if true {
+								count += 1
+								if true {
+									count += 1
+								} else {
+									count += 2
+									if true {
+										count += 1
+										if true {
+											count += 1
+										} else {
+											count += 2
+											if true {
+												count += 1
+											} else {
+												count += 2
+											}
+										}
+									} else {
+										count += 2
+									}
+									if true {
+										count += 1
+										if true {
+											count += 1
+										} else {
+											count += 2
+										}
+									} else {
+										count += 2
+									}
+								}
+							} else {
+								count += 2
+							}
+						}
+					} else {
+						count += 2
+					}
+				} else {
+					count += 2
+					if true {
+						count += 1
+					} else {
+						count += 2
+					}
+				}
+			}
+		} else {
+			if true {
+				count += 1
+			} else {
+				count += 2
+			}
+		}
+
 		if err != nil {
 			render.Status(r, http.StatusBadRequest)
 			render.JSON(w, r, response.Error(err.Error()))
