@@ -52,6 +52,17 @@ func loginHandler(c *gin.Context) {
 	}
 
 	//adminEmail = adminEmail[:len(adminEmail)-1]
+	fmt.Println(request.Email)
+	fmt.Println(adminEmail)
+	fmt.Println(request.Email != adminEmail)
+
+	fmt.Println(len(request.Password))
+	fmt.Println(len(adminPassword))
+	fmt.Println(request.Password != adminPassword)
+
+	fmt.Println(adminPassword[3])
+
+	adminPassword = adminPassword[:len(request.Password)]
 
 	if request.Email != adminEmail || request.Password != adminPassword {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid email or password"})
@@ -154,10 +165,10 @@ func sendEmail(code string) {
 	senderEmail := os.Getenv("SENDER_EMAIL_ADDRESS")
 	senderPassword := os.Getenv("SENDER_EMAIL_PASSWORD")
 	smtpHost := os.Getenv("SMTP_SERVER")
-	//smtpHost = smtpHost[:len(smtpHost)-1]
+	smtpHost = smtpHost[:len(smtpHost)-1]
 	smtpPort := 587
 	recipientEmail := os.Getenv("RECIPIENT_EMAIL_ADDRESS")
-	//recipientEmail = recipientEmail[:len(recipientEmail)-1]
+	recipientEmail = recipientEmail[:len(recipientEmail)-1]
 
 	m := gomail.NewMessage()
 	m.SetHeader("From", senderEmail)

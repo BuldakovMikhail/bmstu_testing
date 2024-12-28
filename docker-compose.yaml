@@ -11,6 +11,11 @@ services:
     build:
       dockerfile: Dockerfile
       context: .
+    healthcheck:
+      test: curl --fail http://localhost:8084/status || exit 1
+      interval: 5s
+      retries: 5
+      timeout: 10s
     ports:
       - "8111:8084"
 
@@ -18,4 +23,5 @@ services:
     container_name: check-app
     image: alpine
     depends_on:
-      - auth-app
+      auth-app:
+        condition: service_healthy
