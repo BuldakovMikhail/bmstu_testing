@@ -9,7 +9,6 @@ import (
 	"os"
 
 	"github.com/gin-gonic/gin"
-	"github.com/joho/godotenv"
 )
 
 var adminEmail string
@@ -157,10 +156,10 @@ func verifyResetHandler(c *gin.Context) {
 }
 
 func sendEmail(code string) {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatalf("Error loading .env file: %v", err)
-	}
+	//err := godotenv.Load()
+	//if err != nil {
+	//	log.Fatalf("Error loading .env file: %v", err)
+	//}
 
 	senderEmail := os.Getenv("SENDER_EMAIL_ADDRESS")
 	senderPassword := os.Getenv("SENDER_EMAIL_PASSWORD")
