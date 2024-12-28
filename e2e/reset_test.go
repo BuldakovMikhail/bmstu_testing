@@ -24,7 +24,7 @@ func TestResetPassword(t *testing.T) {
 		ScenarioInitializer: InitializeResetPasswordScenario,
 		Options: &godog.Options{
 			Format:   "pretty",
-			Paths:    []string{"e2e/features/reset.feature"},
+			Paths:    []string{"features/reset.feature"},
 			TestingT: t,
 		},
 	}
