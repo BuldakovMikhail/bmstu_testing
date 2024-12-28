@@ -17,10 +17,10 @@ var adminPassword string
 var verificationCodes = make(map[string]string)
 
 func main() {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatalf("Error loading .env file: %v", err)
-	}
+	//err := godotenv.Load()
+	//if err != nil {
+	//	log.Fatalf("Error loading .env file: %v", err)
+	//}
 
 	adminEmail = os.Getenv("RECIPIENT_EMAIL_ADDRESS")
 	adminPassword = os.Getenv("RECIPIENT_PASSWORD")
