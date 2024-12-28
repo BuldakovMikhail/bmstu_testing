@@ -41,7 +41,7 @@ func loginWith2FA(ctx *godog.ScenarioContext) {
 		response = expectLogin.Request(method, endpoint).
 			WithJSON(map[string]string{
 				"email":    "mishabul2003@gmail.com",
-				"Password": "123123",
+				"Password": "123",
 			}).
 			Expect()
 		return nil

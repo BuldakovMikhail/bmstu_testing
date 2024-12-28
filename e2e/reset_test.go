@@ -41,7 +41,7 @@ func resetPasswordWith2FA(ctx *godog.ScenarioContext) {
 		response = expectReset.Request(method, endpoint).
 			WithJSON(map[string]string{
 				"email":       "mishabul2003@gmail.com",
-				"oldPassword": "123123",
+				"oldPassword": "123",
 			}).
 			Expect()
 		return nil
