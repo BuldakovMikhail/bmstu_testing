@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/joho/godotenv"
 	"gopkg.in/gomail.v2"
 	"log"
 	"math/rand"
@@ -16,10 +17,10 @@ var adminPassword string
 var verificationCodes = make(map[string]string)
 
 func main() {
-	//err := godotenv.Load()
-	//if err != nil {
-	//	log.Fatalf("Error loading .env file: %v", err)
-	//}
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatalf("Error loading .env file: %v", err)
+	}
 
 	adminEmail = os.Getenv("RECIPIENT_EMAIL_ADDRESS")
 	adminPassword = os.Getenv("RECIPIENT_PASSWORD")
@@ -156,10 +157,10 @@ func verifyResetHandler(c *gin.Context) {
 }
 
 func sendEmail(code string) {
-	//err := godotenv.Load()
-	//if err != nil {
-	//	log.Fatalf("Error loading .env file: %v", err)
-	//}
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatalf("Error loading .env file: %v", err)
+	}
 
 	senderEmail := os.Getenv("SENDER_EMAIL_ADDRESS")
 	senderPassword := os.Getenv("SENDER_EMAIL_PASSWORD")
