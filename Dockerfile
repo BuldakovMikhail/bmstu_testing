@@ -1,10 +1,9 @@
-FROM golang:1.23.1
+FROM golang:latest
 
 WORKDIR /app
 
 COPY . .
-#COPY ./cmd /app/app.env
 
-RUN go mod tidy
+RUN go mod download
 
 CMD ["go", "run", "./cmd/main.go"]
