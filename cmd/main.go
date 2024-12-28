@@ -52,15 +52,15 @@ func loginHandler(c *gin.Context) {
 
 	//adminEmail = adminEmail[:len(adminEmail)-1]
 
-	log.Println(request.Email)
-	log.Println(adminEmail)
-	log.Println(request.Email != adminEmail)
-
-	log.Println(len(request.Password))
-	log.Println(len(adminPassword))
-	log.Println(request.Password != adminPassword)
-
-	log.Println(adminPassword[3])
+	//log.Println(request.Email)
+	//log.Println(adminEmail)
+	//log.Println(request.Email != adminEmail)
+	//
+	//log.Println(len(request.Password))
+	//log.Println(len(adminPassword))
+	//log.Println(request.Password != adminPassword)
+	//
+	//log.Println(adminPassword[3])
 
 	//adminPassword = adminPassword[:len(request.Password)]
 
