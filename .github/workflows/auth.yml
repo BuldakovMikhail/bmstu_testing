@@ -15,14 +15,10 @@ jobs:
 
       - name: Run E2E tests
         env:
-          USER_EMAIL: ${{ secrets.USER_EMAIL}}
-          USER_PASSWORD: ${{ secrets.USER_EMAIL }}
+          USER_EMAIL: ${{ secrets.RECIPIENT_EMAIL_ADDRESS}}
+          USER_PASSWORD: ${{ secrets.RECIPIENT_PASSWORD }}
           USER_SECRET: "123456"
         run: make run-e2e
 
       - name: Remove env
-        env:
-          USER_EMAIL: ${{ secrets.LAB_04_USER_EMAIL}}
-          USER_PASSWORD: ${{ secrets.LAB_04_USER_PASSWORD }}
-          USER_SECRET: ${{secrets.LAB_04_USER_SECRET}}
         run: make docker-rm
