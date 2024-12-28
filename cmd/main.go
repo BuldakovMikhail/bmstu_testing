@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"github.com/joho/godotenv"
 	"gopkg.in/gomail.v2"
 	"log"
 	"math/rand"
@@ -17,10 +16,10 @@ var adminPassword string
 var verificationCodes = make(map[string]string)
 
 func main() {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatalf("Error loading .env file: %v", err)
-	}
+	//err := godotenv.Load()
+	//if err != nil {
+	//	log.Fatalf("Error loading .env file: %v", err)
+	//}
 
 	adminEmail = os.Getenv("RECIPIENT_EMAIL_ADDRESS")
 	adminPassword = os.Getenv("RECIPIENT_PASSWORD")
@@ -52,17 +51,18 @@ func loginHandler(c *gin.Context) {
 	}
 
 	//adminEmail = adminEmail[:len(adminEmail)-1]
-	fmt.Println(request.Email)
-	fmt.Println(adminEmail)
-	fmt.Println(request.Email != adminEmail)
 
-	fmt.Println(len(request.Password))
-	fmt.Println(len(adminPassword))
-	fmt.Println(request.Password != adminPassword)
+	log.Println(request.Email)
+	log.Println(adminEmail)
+	log.Println(request.Email != adminEmail)
 
-	fmt.Println(adminPassword[3])
+	log.Println(len(request.Password))
+	log.Println(len(adminPassword))
+	log.Println(request.Password != adminPassword)
 
-	adminPassword = adminPassword[:len(request.Password)]
+	log.Println(adminPassword[3])
+
+	//adminPassword = adminPassword[:len(request.Password)]
 
 	if request.Email != adminEmail || request.Password != adminPassword {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid email or password"})
@@ -157,18 +157,18 @@ func verifyResetHandler(c *gin.Context) {
 }
 
 func sendEmail(code string) {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatalf("Error loading .env file: %v", err)
-	}
+	//err := godotenv.Load()
+	//if err != nil {
+	//	log.Fatalf("Error loading .env file: %v", err)
+	//}
 
 	senderEmail := os.Getenv("SENDER_EMAIL_ADDRESS")
 	senderPassword := os.Getenv("SENDER_EMAIL_PASSWORD")
 	smtpHost := os.Getenv("SMTP_SERVER")
-	smtpHost = smtpHost[:len(smtpHost)-1]
+	//smtpHost = smtpHost[:len(smtpHost)-1]
 	smtpPort := 587
 	recipientEmail := os.Getenv("RECIPIENT_EMAIL_ADDRESS")
-	recipientEmail = recipientEmail[:len(recipientEmail)-1]
+	//recipientEmail = recipientEmail[:len(recipientEmail)-1]
 
 	m := gomail.NewMessage()
 	m.SetHeader("From", senderEmail)
