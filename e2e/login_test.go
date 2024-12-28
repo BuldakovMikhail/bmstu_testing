@@ -2,6 +2,7 @@ package e2e_test
 
 import (
 	"net/http"
+	"os"
 	"testing"
 
 	"github.com/cucumber/godog"
@@ -37,11 +38,14 @@ func TestLogin(t *testing.T) {
 func loginWith2FA(ctx *godog.ScenarioContext) {
 	var response *httpexpect.Response
 
+	email := os.Getenv("RECIPIENT_EMAIL_ADDRESS")
+	password := os.Getenv("RECIPIENT_PASSWORD")
+
 	ctx.Step(`^User send "([^"]*)" request to "([^"]*)"$`, func(method, endpoint string) error {
 		response = expectLogin.Request(method, endpoint).
 			WithJSON(map[string]string{
-				"email":    "mishabul2003@gmail.com",
-				"Password": "123",
+				"email":    email,
+				"Password": password,
 			}).
 			Expect()
 		return nil
@@ -62,7 +66,7 @@ func loginWith2FA(ctx *godog.ScenarioContext) {
 	ctx.Step(`^user send "([^"]*)" request to "([^"]*)"$`, func(method, endpoint string) error {
 		response = expectLogin.Request(method, endpoint).
 			WithJSON(map[string]string{
-				"email": "mishabul2003@gmail.com",
+				"email": email,
 				"code":  "123456",
 			}).Expect()
 		return nil

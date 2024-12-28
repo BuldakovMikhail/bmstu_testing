@@ -2,6 +2,7 @@ package e2e_test
 
 import (
 	"net/http"
+	"os"
 	"testing"
 
 	"github.com/cucumber/godog"
@@ -37,11 +38,14 @@ func TestResetPassword(t *testing.T) {
 func resetPasswordWith2FA(ctx *godog.ScenarioContext) {
 	var response *httpexpect.Response
 
+	email := os.Getenv("RECIPIENT_EMAIL_ADDRESS")
+	password := os.Getenv("RECIPIENT_PASSWORD")
+
 	ctx.Step(`^User send "([^"]*)" request to "([^"]*)"$`, func(method, endpoint string) error {
 		response = expectReset.Request(method, endpoint).
 			WithJSON(map[string]string{
-				"email":       "mishabul2003@gmail.com",
-				"oldPassword": "123",
+				"email":       email,
+				"oldPassword": password,
 			}).
 			Expect()
 		return nil
@@ -62,9 +66,9 @@ func resetPasswordWith2FA(ctx *godog.ScenarioContext) {
 	ctx.Step(`^user send "([^"]*)" request to "([^"]*)"$`, func(method, endpoint string) error {
 		response = expectReset.Request(method, endpoint).
 			WithJSON(map[string]string{
-				"email":       "mishabul2003@gmail.com",
+				"email":       email,
 				"code":        "123456",
-				"newPassword": "123",
+				"newPassword": password,
 			}).Expect()
 		return nil
 	})
