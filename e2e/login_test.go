@@ -24,7 +24,7 @@ func TestLogin(t *testing.T) {
 		ScenarioInitializer: InitializeLoginScenario,
 		Options: &godog.Options{
 			Format:   "pretty",
-			Paths:    []string{"features/login.feature"},
+			Paths:    []string{"e2e/features/login.feature"},
 			TestingT: t,
 		},
 	}
